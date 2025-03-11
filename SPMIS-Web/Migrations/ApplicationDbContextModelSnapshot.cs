@@ -86,7 +86,8 @@ namespace SPMIS_Web.Migrations
 
                     b.Property<string>("MapTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("MapId");
 

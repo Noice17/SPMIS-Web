@@ -1,2 +1,31 @@
-﻿<h1>Strategic Map</h1>
+﻿@{
+    ViewData["Title"] = "Strategic Map";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<h1>Strategic Map</h1>
+
 <a class="btn btn-outline-dark" asp-controller="Objective" asp-action="AddObjective">Add Objective</a>
+<a class="btn btn-outline-dark" asp-controller="Map" asp-action="MapList">View Map</a>
+<a class="btn btn-outline-dark" asp-controller="Map" asp-action="CreateMap">Create Map</a>
+
+@model IEnumerable<SPMIS_Web.Models.Entities.StrategyMap>
+
+<div class="container mx-auto py-8">
+    <h2 class="text-2xl font-semibold mb-4">List of Strategy Maps</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach (var map in Model)
+        {
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-xl font-semibold mb-2">@map.MapTitle</h3>
+                <p class="text-gray-700">@map.MapDescription</p>
+                <p class="text-gray-600">Duration: @map.MapStart.ToString("yyyy-MM-dd") - @map.MapEnd.ToString("yyyy-MM-dd")</p>
+                <a asp-action="ViewMap" asp-route-id="@map.MapId" class="inline-block mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    View Details
+                </a>
+            </div>
+        }
+    </div>
+</div>
