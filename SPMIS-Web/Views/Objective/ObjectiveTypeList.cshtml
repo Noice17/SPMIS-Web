@@ -1,0 +1,101 @@
+﻿@model List<SPMIS_Web.Models.Entities.ObjectiveType>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Objective Types</h1>
+    <a class="btn btn-outline-dark" asp-controller="Objective" asp-action="AddObjectiveType">Add Objective Type</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Objective Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int count = 1;
+            @foreach (var objectiveType in Model)
+            {
+                <tr>
+                    <td>@count</td>
+                    <td>
+                        <!-- Visible Text -->
+                        <span class="view-mode" id="nameDisplay_@objectiveType.ObjectiveTypeId">@objectiveType.ObjectiveTypeName</span>
+
+                        <!-- Hidden Input Field -->
+                        <input type="text" class="edit-mode form-control d-none" id="nameInput_@objectiveType.ObjectiveTypeId" value="@objectiveType.ObjectiveTypeName" />
+                    </td>
+                    <td>
+                        <!-- Action Buttons -->
+                        <button class="btn btn-primary btn-sm" id="editBtn_@objectiveType.ObjectiveTypeId" onclick="editObjective('@objectiveType.ObjectiveTypeId')">Edit</button>
+                        <button class="btn btn-success btn-sm d-none" id="saveBtn_@objectiveType.ObjectiveTypeId" onclick="saveObjective('@objectiveType.ObjectiveTypeId')">Save</button>
+                        <button class="btn btn-secondary btn-sm d-none" id="cancelBtn_@objectiveType.ObjectiveTypeId" onclick="cancelEdit('@objectiveType.ObjectiveTypeId')">Cancel</button>
+                    </td>
+                </tr>
+                count++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">No objective types found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function editObjective(id) {
+        id = encodeURIComponent(id); // Ensure GUID is safe for use in selectors
+
+        // Toggle visibility
+        document.getElementById("nameDisplay_" + id).classList.add("d-none");
+        document.getElementById("nameInput_" + id).classList.remove("d-none");
+
+        document.getElementById("editBtn_" + id).classList.add("d-none");
+        document.getElementById("saveBtn_" + id).classList.remove("d-none");
+        document.getElementById("cancelBtn_" + id).classList.remove("d-none");
+    }
+
+    function cancelEdit(id) {
+        id = encodeURIComponent(id);
+
+        // Restore visibility
+        document.getElementById("nameDisplay_" + id).classList.remove("d-none");
+        document.getElementById("nameInput_" + id).classList.add("d-none");
+
+        document.getElementById("editBtn_" + id).classList.remove("d-none");
+        document.getElementById("saveBtn_" + id).classList.add("d-none");
+        document.getElementById("cancelBtn_" + id).classList.add("d-none");
+    }
+
+    function saveObjective(id) {
+        id = encodeURIComponent(id);
+        let newName = document.getElementById("nameInput_" + id).value.trim();
+
+        fetch('/Objective/EditObjectiveType', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector("input[name='__RequestVerificationToken']")?.value || ''
+            },
+            body: JSON.stringify({ ObjectiveTypeId: id, ObjectiveTypeName: newName })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error updating Objective Type.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("nameDisplay_" + id).textContent = newName;
+            cancelEdit(id);
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    }
+</script>
