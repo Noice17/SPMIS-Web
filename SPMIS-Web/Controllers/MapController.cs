@@ -26,6 +26,13 @@ namespace SPMIS_Web.Controllers
         [HttpGet]
         public IActionResult StrategicMap()
         {
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+            ViewData["ActivePage"] = "StrategyMap"; // Highlight Strategy Map
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
             var maps = _context.StrategyMaps.OrderByDescending(m => m.MapStart).ToList();
             return View(maps);
         }
