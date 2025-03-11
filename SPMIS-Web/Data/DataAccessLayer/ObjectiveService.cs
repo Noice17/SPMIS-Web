@@ -48,5 +48,18 @@ namespace SPMIS_Web.Data.DataAccessLayer
             return true;
         }
 
+        // Add this method inside ObjectiveService.cs
+        public async Task AddObjective(Objective objective)
+        {
+            if (objective == null)
+            {
+                throw new ArgumentException("Objective cannot be null.");
+            }
+
+            _dbContext.Objectives.Add(objective);
+            await _dbContext.SaveChangesAsync();
+        }
+
+
     }
 }

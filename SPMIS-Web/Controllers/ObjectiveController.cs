@@ -1,42 +1,70 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SPMIS_Web.Data.DataAccessLayer;
 using SPMIS_Web.Models.Entities;
-using System.Data;
+using SPMIS_Web.Models.ViewModels;
+using SPMIS_Web.Data.DataAccessLayer; // Corrected namespace for ObjectiveService
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SPMIS_Web.Controllers
 {
     public class ObjectiveController : Controller
     {
         private readonly ObjectiveService _objectiveService;
+
         public ObjectiveController(ObjectiveService objectiveService)
         {
             _objectiveService = objectiveService;
         }
+
         public IActionResult Index()
         {
             return View();
         }
 
+        // GET: Load Add Objective form with dropdown values
         [HttpGet]
-        public IActionResult AddObjective()
+        public async Task<IActionResult> AddObjective()
         {
-            return View();
+            var model = new AddObjectiveViewModel
+            {
+                ObjectiveType = await _objectiveService.GetObjectiveTypes() // Fetch ObjectiveType from DB
+            };
+
+            return View(model);
         }
-        //[HttpPost]
 
+        // POST: Add Objective
+        [HttpPost]
+        public async Task<IActionResult> AddObjective(AddObjectiveViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.ObjectiveType = await _objectiveService.GetObjectiveTypes(); // Reload dropdown data
+                return View(model);
+            }
 
-        //Create
+            var newObjective = new Objective
+            {
+                ObjectiveDescription = model.ObjectiveDescription,
+                ObjectiveTypeId = model.ObjectTypeId // Assign selected ObjectTypeId
+            };
+
+            await _objectiveService.AddObjective(newObjective);
+            return RedirectToAction("Index");
+        }
+
+        // GET: Load Add Objective Type form
         [HttpGet]
         public IActionResult AddObjectiveType()
         {
             return View();
         }
 
+        // POST: Add Objective Type
         [HttpPost]
         public async Task<IActionResult> AddObjectiveType(ObjectiveType objectiveType)
         {
-
             if (!ModelState.IsValid)
             {
                 return View(objectiveType);
@@ -46,15 +74,15 @@ namespace SPMIS_Web.Controllers
             return RedirectToAction("AddObjectiveType", "Objective");
         }
 
-        //Read/Retrieve (Get data from Database)
+        // GET: Retrieve list of Objective Type
         [HttpGet]
         public async Task<IActionResult> ObjectiveTypeList()
         {
-            var objectiveTypes = await _objectiveService.GetObjectiveTypes();
-            return View(objectiveTypes);
+            var objectiveType = await _objectiveService.GetObjectiveTypes();
+            return View(objectiveType);
         }
 
-        //Edit
+        // POST: Edit Objective Type
         [HttpPost]
         public async Task<IActionResult> EditObjectiveType([FromBody] ObjectiveType model)
         {
@@ -71,8 +99,5 @@ namespace SPMIS_Web.Controllers
 
             return Json(new { message = "Objective Type updated successfully!" });
         }
-
-
-
     }
 }

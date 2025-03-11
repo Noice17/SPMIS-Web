@@ -11,6 +11,7 @@ namespace SPMIS_Web.Controllers
         [HttpGet]
         public IActionResult StrategicMap()
         {
+            ViewData["ActivePage"] = "StrategyMap"; // Highlight Strategy Map
             return View();
         }
     }
