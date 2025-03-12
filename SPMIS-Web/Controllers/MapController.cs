@@ -36,6 +36,7 @@ namespace SPMIS_Web.Controllers
         {
             var map = _context.StrategyMaps
                 .Include(m => m.Objective) // Include the related Objective data
+                .ThenInclude(o => o.Type)
                 .FirstOrDefault(m => m.MapId == id);
 
             if (map == null)
