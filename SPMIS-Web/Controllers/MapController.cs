@@ -34,11 +34,15 @@ namespace SPMIS_Web.Controllers
         [HttpGet]
         public IActionResult ViewMap(Guid id)
         {
-            var map = _context.StrategyMaps.FirstOrDefault(m => m.MapId == id);
+            var map = _context.StrategyMaps
+                .Include(m => m.Objective) // Include the related Objective data
+                .FirstOrDefault(m => m.MapId == id);
+
             if (map == null)
             {
                 return NotFound(); // Handle case when map is not found
             }
+
             return View(map);
         }
 
