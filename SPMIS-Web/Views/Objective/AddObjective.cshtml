@@ -2,6 +2,19 @@
 
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
+<div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="bg-white p-6 rounded-lg shadow-md border w-96">
+        <!-- Header -->
+        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Add Objectives</h1>
+
+        <!-- Form -->
+        <form method="post" asp-action="AddObjective">
+            <input type="hidden" name="mapId" value="@Model.MapId" />
+
+            <div class="mb-4">
+                <label for="objectiveDescription" class="block font-semibold">Objective Description</label>
+                <input type="text" id="objectiveDescription" name="ObjectiveDescription" class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
+            </div>
 <form id="addObjectiveForm" method="post" asp-action="AddObjective">
     <div class="mb-4">
         <label for="objectiveDescription" class="block font-semibold">Objective Description</label>
