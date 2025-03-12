@@ -1,16 +1,20 @@
 ﻿@model List<SPMIS_Web.Models.Entities.ObjectiveType>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="mb-0">Objective Types</h1>
-    <a class="btn btn-outline-dark" asp-controller="Objective" asp-action="AddObjectiveType">Add Objective Type</a>
+
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-xl font-semibold">Objective Types</h1>
+    <a class="px-4 py-2 border border-gray-700 text-gray-700 rounded hover:bg-gray-700 hover:text-white transition"
+       asp-controller="Objective" asp-action="AddObjectiveType">
+        Add Objective Type
+    </a>
 </div>
 
-<table class="table">
+<table class="w-full border-collapse border border-gray-300">
     <thead>
-        <tr>
-            <th>#</th>
-            <th>Objective Type</th>
-            <th>Actions</th>
+        <tr class="bg-gray-200">
+            <th class="border border-gray-300 px-4 py-2">#</th>
+            <th class="border border-gray-300 px-4 py-2">Objective Type</th>
+            <th class="border border-gray-300 px-4 py-2">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -19,20 +23,25 @@
             int count = 1;
             @foreach (var objectiveType in Model)
             {
-                <tr>
-                    <td>@count</td>
-                    <td>
-                        <!-- Visible Text -->
+                <tr class="border border-gray-300">
+                    <td class="border border-gray-300 px-4 py-2">@count</td>
+                    <td class="border border-gray-300 px-4 py-2">
                         <span class="view-mode" id="nameDisplay_@objectiveType.ObjectiveTypeId">@objectiveType.ObjectiveTypeName</span>
-
-                        <!-- Hidden Input Field -->
-                        <input type="text" class="edit-mode form-control d-none" id="nameInput_@objectiveType.ObjectiveTypeId" value="@objectiveType.ObjectiveTypeName" />
+                        <input type="text" class="edit-mode hidden border p-1" id="nameInput_@objectiveType.ObjectiveTypeId" value="@objectiveType.ObjectiveTypeName" />
                     </td>
-                    <td>
-                        <!-- Action Buttons -->
-                        <button class="btn btn-primary btn-sm" id="editBtn_@objectiveType.ObjectiveTypeId" onclick="editObjective('@objectiveType.ObjectiveTypeId')">Edit</button>
-                        <button class="btn btn-success btn-sm d-none" id="saveBtn_@objectiveType.ObjectiveTypeId" onclick="saveObjective('@objectiveType.ObjectiveTypeId')">Save</button>
-                        <button class="btn btn-secondary btn-sm d-none" id="cancelBtn_@objectiveType.ObjectiveTypeId" onclick="cancelEdit('@objectiveType.ObjectiveTypeId')">Cancel</button>
+                    <td class="border border-gray-300 px-4 py-2 space-x-2">
+                        <button class="px-2 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition"
+                                id="editBtn_@objectiveType.ObjectiveTypeId" onclick="editObjective('@objectiveType.ObjectiveTypeId')">
+                            Edit
+                        </button>
+                        <button class="px-2 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition hidden"
+                                id="saveBtn_@objectiveType.ObjectiveTypeId" onclick="saveObjective('@objectiveType.ObjectiveTypeId')">
+                            Save
+                        </button>
+                        <button class="px-2 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition hidden"
+                                id="cancelBtn_@objectiveType.ObjectiveTypeId" onclick="cancelEdit('@objectiveType.ObjectiveTypeId')">
+                            Cancel
+                        </button>
                     </td>
                 </tr>
                 count++;
@@ -41,7 +50,7 @@
         else
         {
             <tr>
-                <td colspan="3" class="text-center">No objective types found.</td>
+                <td colspan="3" class="text-center p-4">No objective types found.</td>
             </tr>
         }
     </tbody>
@@ -49,27 +58,21 @@
 
 <script>
     function editObjective(id) {
-        id = encodeURIComponent(id); // Ensure GUID is safe for use in selectors
-
-        // Toggle visibility
-        document.getElementById("nameDisplay_" + id).classList.add("d-none");
-        document.getElementById("nameInput_" + id).classList.remove("d-none");
-
-        document.getElementById("editBtn_" + id).classList.add("d-none");
-        document.getElementById("saveBtn_" + id).classList.remove("d-none");
-        document.getElementById("cancelBtn_" + id).classList.remove("d-none");
+        id = encodeURIComponent(id);
+        document.getElementById("nameDisplay_" + id).classList.add("hidden");
+        document.getElementById("nameInput_" + id).classList.remove("hidden");
+        document.getElementById("editBtn_" + id).classList.add("hidden");
+        document.getElementById("saveBtn_" + id).classList.remove("hidden");
+        document.getElementById("cancelBtn_" + id).classList.remove("hidden");
     }
 
     function cancelEdit(id) {
         id = encodeURIComponent(id);
-
-        // Restore visibility
-        document.getElementById("nameDisplay_" + id).classList.remove("d-none");
-        document.getElementById("nameInput_" + id).classList.add("d-none");
-
-        document.getElementById("editBtn_" + id).classList.remove("d-none");
-        document.getElementById("saveBtn_" + id).classList.add("d-none");
-        document.getElementById("cancelBtn_" + id).classList.add("d-none");
+        document.getElementById("nameDisplay_" + id).classList.remove("hidden");
+        document.getElementById("nameInput_" + id).classList.add("hidden");
+        document.getElementById("editBtn_" + id).classList.remove("hidden");
+        document.getElementById("saveBtn_" + id).classList.add("hidden");
+        document.getElementById("cancelBtn_" + id).classList.add("hidden");
     }
 
     function saveObjective(id) {
