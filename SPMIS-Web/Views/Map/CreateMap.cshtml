@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Create New Map";
+}
+@model SPMIS_Web.Models.Entities.StrategyMap
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<!-- Create Map Form -->
+<form id="mapForm" asp-controller="Map" asp-action="CreateMap" method="post">
+    <div>
+        <label asp-for="MapTitle" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Title</label>
+        <input asp-for="MapTitle" type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2">
+    </div>
+    <div>
+        <label asp-for="MapDescription" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Description</label>
+        <textarea asp-for="MapDescription" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2"></textarea>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label asp-for="MapStart" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Start Date</label>
+            <input asp-for="MapStart" type="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+        </div>
+        <div>
+            <label asp-for="MapEnd" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">End Date</label>
+            <input asp-for="MapEnd" type="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+        </div>
+    </div>
+    <button type="submit" class="w-full mt-4 bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+        Save
+    </button>
+</form>
+

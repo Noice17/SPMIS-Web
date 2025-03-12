@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SPMIS_Web.Data; 
+using SPMIS_Web.Data;
 
 namespace SPMIS_Web.Controllers
 {
@@ -23,20 +23,13 @@ namespace SPMIS_Web.Controllers
         }
 
         [HttpGet]
-        [HttpGet]
         public IActionResult StrategicMap()
         {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
             ViewData["ActivePage"] = "StrategyMap"; // Highlight Strategy Map
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
             var maps = _context.StrategyMaps.OrderByDescending(m => m.MapStart).ToList();
             return View(maps);
         }
-
 
         [HttpGet]
         public IActionResult ViewMap(Guid id)
@@ -49,11 +42,10 @@ namespace SPMIS_Web.Controllers
             return View(map);
         }
 
-
         [HttpGet]
         public IActionResult CreateMap()
         {
-            return View();
+            return PartialView("CreateMap"); // Use a Partial View
         }
 
         [HttpPost]
@@ -68,7 +60,6 @@ namespace SPMIS_Web.Controllers
             }
             return View(model);
         }
-
 
         [HttpGet]
         public IActionResult MapList(int page = 1)

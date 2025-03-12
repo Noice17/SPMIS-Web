@@ -2,30 +2,107 @@
     ViewData["Title"] = "Strategic Map";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-<h1>Strategic Map</h1>
-
-<a class="btn btn-outline-dark" asp-controller="Objective" asp-action="AddObjective">Add Objective</a>
-<a class="btn btn-outline-dark" asp-controller="Map" asp-action="MapList">View Map</a>
-<a class="btn btn-outline-dark" asp-controller="Map" asp-action="CreateMap">Create Map</a>
-
 @model IEnumerable<SPMIS_Web.Models.Entities.StrategyMap>
 
-<div class="container mx-auto py-8">
-    <h2 class="text-2xl font-semibold mb-4">List of Strategy Maps</h2>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach (var map in Model)
-        {
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h3 class="text-xl font-semibold mb-2">@map.MapTitle</h3>
-                <p class="text-gray-700">@map.MapDescription</p>
-                <p class="text-gray-600">Duration: @map.MapStart.ToString("yyyy-MM-dd") - @map.MapEnd.ToString("yyyy-MM-dd")</p>
-                <a asp-action="ViewMap" asp-route-id="@map.MapId" class="inline-block mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    View Details
-                </a>
+<div class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Strategic Maps</h1>
+            <div class="flex items-center space-x-4">
+                <button id="darkModeToggle" class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                    <i class="fas fa-moon text-gray-800 dark:text-gray-200"></i>
+                </button>
+                <button id="openCreateMapModal" class="flex items-center bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i> Create New Map
+                </button>
             </div>
-        }
+        </header>
+
+        <!-- Search & Filter -->
+        <div class="flex items-center space-x-4 mb-4">
+            <div class="relative flex-grow">
+                <input type="text" id="search-maps" placeholder="Search strategy maps..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+            </div>
+            <select id="filter-maps" class="px-4 py-2 border border-gray-300 rounded-lg">
+                <option value="all">All Maps</option>
+                <option value="active">Active</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+
+        <!-- Strategy Map List -->
+        <div id="mapList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var map in Model)
+                {
+                    <div class="map-card bg-white dark:bg-gray-800 rounded-lg shadow-md transition transform hover:scale-105 p-4" data-status="active">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">@map.MapTitle</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">@map.MapDescription</p>
+                        <p class="text-gray-500 dark:text-gray-300 text-xs">@map.MapStart.ToString("yyyy-MM-dd") - @map.MapEnd.ToString("yyyy-MM-dd")</p>
+                        <a asp-action="ViewMap" asp-route-id="@map.MapId" class="mt-3 block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            View Details
+                        </a>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center text-gray-600 dark:text-gray-300">
+                    <p>No strategy maps found.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="createMapModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+        <div id="modalContent" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 relative">
+            <button id="closeModal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900">&times;</button>
+            <div id="modalBody">
+                <!-- Form will be loaded here dynamically -->
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('createMapModal');
+        const openModalBtn = document.getElementById('openCreateMapModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modalBody = document.getElementById('modalBody');
+
+        // Open modal and load form
+        openModalBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('@Url.Action("CreateMap", "Map")');
+                const html = await response.text();
+                modalBody.innerHTML = html;
+                modal.classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading modal content:', error);
+            }
+        });
+
+        // Close modal
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modalBody.innerHTML = ''; // Clear modal content
+        });
+
+        // Close modal on overlay click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+                modalBody.innerHTML = ''; // Clear modal content
+            }
+        });
+    });
+</script>
