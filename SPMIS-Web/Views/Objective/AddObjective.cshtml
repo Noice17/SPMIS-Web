@@ -8,6 +8,8 @@
 
         <!-- Form -->
         <form method="post" asp-action="AddObjective">
+            <input type="hidden" name="mapId" value="@Model.MapId" />
+
             <div class="mb-4">
                 <label for="objectiveDescription" class="block font-semibold">Objective Description</label>
                 <input type="text" id="objectiveDescription" name="ObjectiveDescription" class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>

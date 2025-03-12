@@ -24,10 +24,11 @@ namespace SPMIS_Web.Controllers
 
         // GET: Load Add Objective form with dropdown values
         [HttpGet]
-        public async Task<IActionResult> AddObjective()
+        public async Task<IActionResult> AddObjective(Guid mapId)
         {
             var model = new AddObjectiveViewModel
             {
+                MapId = mapId,
                 ObjectiveType = await _objectiveService.GetObjectiveTypes() // Fetch ObjectiveType from DB
             };
 
@@ -47,11 +48,12 @@ namespace SPMIS_Web.Controllers
             var newObjective = new Objective
             {
                 ObjectiveDescription = model.ObjectiveDescription,
-                ObjectiveTypeId = model.ObjectTypeId // Assign selected ObjectTypeId
+                ObjectiveTypeId = model.ObjectTypeId, // Assign selected ObjectTypeId
+                MapId = model.MapId
             };
 
             await _objectiveService.AddObjective(newObjective);
-            return RedirectToAction("Index");
+            return RedirectToAction("AddObjective", "Objective");
         }
 
         // GET: Load Add Objective Type form
