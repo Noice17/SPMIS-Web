@@ -31,7 +31,7 @@ namespace SPMIS_Web.Controllers
                 ObjectiveType = await _objectiveService.GetObjectiveTypes() // Fetch ObjectiveType from DB
             };
 
-            return View(model);
+            return View("AddObjective", model); //Load as partial view
         }
 
         // POST: Add Objective

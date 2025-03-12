@@ -7,374 +7,201 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<style>
-    /* Updated Color Scheme - "Ocean Breeze" */
-    :root {
-        --color-primary: #1E3A8A; /* Deep Blue (Header, Active Elements) */
-        --color-secondary: #A3D9C5; /* Soft Mint Green */
-        --color-accent: #F5A623; /* Warm Yellow */
-        --color-background: #F0F9FF; /* Lightest Blue (Body Background) */
-        --color-surface: #FFFFFF; /* White (Cards, Surfaces) */
-        --color-border: #E5E7EB; /* Gray-200 (Subtle Borders) */
-        --color-text-primary: #111827; /* Gray-900 (Primary Text) */
-        --color-text-secondary: #6B7280; /* Gray-500 (Secondary Text) */
-        --color-success: #16A34A; /* Green (Success Status) */
-        --color-warning: #F59E0B; /* Orange (Warning Status) */
-        --color-danger: #DC2626; /* Red (Danger Status) */
-        --color-info: #0EA5E9; /* Cyan (Info Status) */
-    }
-
-    body {
-        background-color: var(--color-background);
-        color: var(--color-text-primary);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern Font */
-        line-height: 1.6;
-    }
-
-    .btn-primary {
-        background-color: var(--color-primary);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
-        transition: background-color 0.2s ease-in-out;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-        .btn-primary:hover {
-            background-color: var(--color-accent);
-            color: var(--color-text-primary);
-        }
-
-    .btn-secondary {
-        background-color: var(--color-secondary);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
-        transition: background-color 0.2s ease-in-out;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-        .btn-secondary:hover {
-            background-color: var(--color-accent);
-            color: var(--color-text-primary);
-        }
-
-    .card {
-        background-color: var(--color-surface);
-        border: 1px solid var(--color-border);
-        border-radius: 0.75rem;
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-        }
-
-    .text-primary {
-        color: var(--color-text-primary);
-    }
-
-    .text-secondary {
-        color: var(--color-text-secondary);
-    }
-
-    .badge {
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-
-        .badge.active {
-            background-color: var(--color-success);
-        }
-
-        .badge.on-hold {
-            background-color: var(--color-warning);
-        }
-
-        .badge.completed {
-            background-color: #9CA3AF; /* Gray-400 */
-        }
-
-    .active-page {
-        background-color: var(--color-primary);
-        color: white;
-    }
-
-    .page-button {
-        border: 1px solid var(--color-border);
-        border-radius: 0.375rem;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-        color: var(--color-text-secondary);
-        font-weight: 500;
-    }
-
-        .page-button:hover:not(.active-page) {
-            background-color: var(--color-border);
-            color: var(--color-text-primary);
-        }
-
-    .action-link {
-        color: var(--color-text-secondary);
-        transition: color 0.2s ease-in-out;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-        .action-link:hover {
-            color: var(--color-accent);
-        }
-
-    /* Form Styles */
-    select.form-select,
-    input.form-input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid var(--color-border);
-        border-radius: 0.5rem;
-        background-color: var(--color-surface);
-        color: var(--color-text-primary);
-        font-size: 1rem;
-        transition: border-color 0.2s ease-in-out;
-    }
-
-        select.form-select:focus,
-        input.form-input:focus {
-            border-color: var(--color-secondary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* Light Blue Ring */
-        }
-
-    label.form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--color-text-primary);
-        font-weight: 500;
-    }
-
-    /* Accessibility */
-    .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-    }
-
-    /* Header Styles */
-    .header {
-        background-color: var(--color-primary);
-        color: white;
-        padding: 2rem 1rem;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
-            background-size: 50px 50px;
-            opacity: 0.2;
-            z-index: 0;
-        }
-
-    .header-content {
-        position: relative;
-        z-index: 1;
-    }
-
-    .header-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .header-subtitle {
-        font-size: 1.25rem;
-        font-weight: 400;
-    }
-</style>
-
-<div class="min-h-screen p-6 flex flex-col">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Header -->
-    <header class="header w-full mb-8 text-center">
-        <div class="header-content">
-            <h1 class="header-title">@Model.MapTitle</h1>
-            <p class="header-subtitle">Strategic Period: @Model.MapStart.Year - @Model.MapEnd.Year</p>
+    <header class="w-full mb-8 text-center bg-blue-900 dark:bg-blue-800 text-white p-8 rounded-xl shadow-lg relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">@Model.MapTitle</h1>
+            <p class="text-lg md:text-xl">Strategic Period: @Model.MapStart.Year - @Model.MapEnd.Year</p>
+            <p class="mt-2 text-blue-200 max-w-2xl mx-auto">@Model.MapDescription</p>
         </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-800 to-blue-900 dark:from-blue-900 dark:to-blue-950 opacity-50"></div>
     </header>
 
-    <!-- Action Buttons Container -->
-    <div class="flex justify-between items-center space-x-3 mb-8 max-w-6xl mx-auto w-full">
-        <div>
-            <a asp-controller="Map" asp-action="StrategicMap" class="btn-secondary flex items-center px-4 py-2 rounded-md font-medium shadow-sm">
+    <div class="container mx-auto px-4 pb-8">
+        <!-- Action Buttons Container -->
+        <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-8">
+            <a asp-controller="Map" asp-action="StrategicMap" class="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center px-4 py-2 rounded-lg font-medium shadow-sm transition duration-200">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Maps
             </a>
-        </div>
-        <div>
-            <a asp-controller="Objective" asp-action="AddObjective" class="btn-primary flex items-center px-4 py-2 rounded-md font-medium shadow-sm">
-                <i class="fas fa-plus mr-2"></i>Add Objective
-            </a>
-        </div>
-    </div>
+            <div class="flex w-full sm:w-auto space-x-3">
+                <button id="openAddObjectiveModal"
+                        class="flex-grow sm:flex-grow-0 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white flex items-center justify-center px-4 py-2 rounded-lg font-medium shadow-sm transition duration-200">
+                    <i class="fas fa-plus mr-2"></i> Add Objective
+                </button>
+            </div>
 
-    <!-- Strategy Objectives Section -->
-    <section class="max-w-6xl mx-auto w-full mb-8">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-medium text-primary">Strategy Objectives</h2>
-            <div class="flex space-x-2">
-                <div class="relative">
-                    <select id="filterStatus" class="form-select">
-                        <option value="">Filter by Status</option>
-                        <option value="active">Active</option>
-                        <option value="completed">Completed</option>
-                        <option value="on-hold">On Hold</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+        </div>
+
+        <!-- Strategy Objectives Section -->
+        <section class="mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-3 sm:space-y-0">
+                <h2 class="text-2xl font-medium text-gray-900 dark:text-gray-100">Strategy Objectives</h2>
+
+                <div class="flex flex-col sm:flex-row w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-2">
+                    <div class="relative w-full sm:w-auto">
+                        <input type="text" id="searchObjectives" placeholder="Search objectives..." class="w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-search absolute right-3 top-2.5 text-gray-400 dark:text-gray-300"></i>
                     </div>
-                </div>
-                <div class="relative">
-                    <select id="sortBy" class="form-select">
-                        <option value="">Sort by</option>
-                        <option value="date">Date Added</option>
-                        <option value="priority">Priority</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                    <div class="relative w-full sm:w-auto">
+                        <select id="filterStatus" class="w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="on-hold">On Hold</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                        </div>
+                    </div>
+                    <div class="relative w-full sm:w-auto">
+                        <select id="sortBy" class="w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="date">Date Added</option>
+                            <option value="priority">Priority</option>
+                            <option value="status">Status</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Objectives Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @for (int i = 1; i <= 6; i++)
-            {
-                <article class="card rounded-lg overflow-hidden">
-                    <div class="p-5">
+            <!-- Objectives Grid -->
+            <div id="objectivesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @for (int i = 1; i <= 6; i++)
+                {
+                    <article class="objective-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-200 p-5"
+                             data-status="@(i % 3 == 0 ? "completed" : (i % 2 == 0 ? "on-hold" : "active"))">
                         <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-semibold text-primary">Objective @i</h3>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Objective @i</h3>
                             @{
                                 string statusClass = "";
                                 string statusText = "Active";
 
                                 if (i % 3 == 0)
                                 {
-                                    statusClass = "completed";
+                                    statusClass = "bg-gray-500 dark:bg-gray-600";
                                     statusText = "Completed";
                                 }
                                 else if (i % 2 == 0)
                                 {
-                                    statusClass = "on-hold";
+                                    statusClass = "bg-yellow-500 dark:bg-yellow-600";
                                     statusText = "On Hold";
                                 }
                                 else
                                 {
-                                    statusClass = "active";
+                                    statusClass = "bg-green-600 dark:bg-green-700";
                                     statusText = "Active";
                                 }
                             }
-                            <span class="badge inline-block text-xs px-2 py-1 rounded @statusClass">@statusText</span>
+                            <span class="@statusClass text-white inline-block text-xs px-2 py-1 rounded">@statusText</span>
                         </div>
-                        <p class="text-secondary text-sm mb-4">Core Strategy @i</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Core Strategy @i</p>
 
                         <div class="space-y-3 mb-4">
                             <div class="flex items-start">
-                                <span class="text-secondary min-w-20"><i class="fas fa-users mr-2"></i>Offices:</span>
-                                <span class="text-primary">Office A, Office B</span>
+                                <span class="text-gray-500 dark:text-gray-400 min-w-20"><i class="fas fa-users mr-2"></i>Offices:</span>
+                                <span class="text-gray-900 dark:text-gray-200">Office A, Office B</span>
                             </div>
                             <div class="flex items-start">
-                                <span class="text-secondary min-w-20"><i class="fas fa-bullseye mr-2"></i>Result:</span>
-                                <span class="text-primary">Achieve 50% market share</span>
+                                <span class="text-gray-500 dark:text-gray-400 min-w-20"><i class="fas fa-bullseye mr-2"></i>Result:</span>
+                                <span class="text-gray-900 dark:text-gray-200">Achieve 50% market share</span>
                             </div>
                             <div class="flex items-start">
-                                <span class="text-secondary min-w-20"><i class="fas fa-calendar mr-2"></i>Timeline:</span>
-                                <span class="text-primary">Q1 2025</span>
+                                <span class="text-gray-500 dark:text-gray-400 min-w-20"><i class="fas fa-calendar mr-2"></i>Timeline:</span>
+                                <span class="text-gray-900 dark:text-gray-200">Q1 2025</span>
                             </div>
                         </div>
 
-                        <footer class="pt-3 border-t border-border flex justify-between">
-                            <button class="action-link" aria-label="Edit Objective">
+                        <footer class="pt-3 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-between gap-2">
+                            <button class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition duration-200 flex items-center gap-2" aria-label="Edit Objective">
                                 <i class="fas fa-edit" aria-hidden="true"></i>Edit
                             </button>
-                            <button class="action-link" aria-label="Assign Objective">
+                            <button class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition duration-200 flex items-center gap-2" aria-label="Assign Objective">
                                 <i class="fas fa-user-plus" aria-hidden="true"></i>Assign
                             </button>
-                            <button class="action-link" aria-label="View Objective Details">
+                            <button class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition duration-200 flex items-center gap-2" aria-label="View Objective Details">
                                 <i class="fas fa-eye" aria-hidden="true"></i>View
                             </button>
                         </footer>
-                    </div>
-                </article>
-            }
-        </div>
-    </section>
+                    </article>
+                }
+            </div>
 
-    <!-- Pagination -->
-    <footer class="flex justify-between items-center max-w-6xl mx-auto w-full mt-6">
-        <span class="text-sm text-secondary">Showing 1-6 of 18 objectives</span>
-        <div class="flex space-x-1">
-            <button class="page-button w-8 h-8 flex items-center justify-center rounded" aria-label="Previous page" disabled>
-                <i class="fas fa-chevron-left text-xs" aria-hidden="true"></i>
-            </button>
-            <button class="page-button active-page w-8 h-8 flex items-center justify-center rounded" aria-label="Current page, Page 1">1</button>
-            <button class="page-button w-8 h-8 flex items-center justify-center rounded" aria-label="Go to page 2">2</button>
-            <button class="page-button w-8 h-8 flex items-center justify-center rounded" aria-label="Go to page 3">3</button>
-            <button class="page-button w-8 h-8 flex items-center justify-center rounded" aria-label="Next page">
-                <i class="fas fa-chevron-right text-xs" aria-hidden="true"></i>
-            </button>
+            <!-- No Results Message (Initially Hidden) -->
+            <div id="noResults" class="hidden text-center py-12 text-gray-600 dark:text-gray-300">
+                <i class="fas fa-filter text-4xl mb-4"></i>
+                <p class="text-xl">No matching objectives found.</p>
+                <p class="mt-2">Try adjusting your search or filters.</p>
+            </div>
+        </section>
+
+        <!-- Pagination -->
+        <footer class="flex flex-col sm:flex-row justify-between items-center mt-6 space-y-4 sm:space-y-0">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Showing 1-6 of 18 objectives</span>
+            <div class="flex space-x-1">
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 disabled:opacity-50" aria-label="Previous page" disabled>
+                    <i class="fas fa-chevron-left text-xs" aria-hidden="true"></i>
+                </button>
+                <button class="w-8 h-8 flex items-center justify-center rounded bg-blue-600 text-white" aria-label="Current page, Page 1">1</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Go to page 2">2</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Go to page 3">3</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Next page">
+                    <i class="fas fa-chevron-right text-xs" aria-hidden="true"></i>
+                </button>
+            </div>
+        </footer>
+
+        <!-- Modal Background -->
+        <div id="addObjectiveModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex justify-center items-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+                <button id="closeAddObjectiveModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                    ✖
+                </button>
+
+                <!-- Modal Header -->
+                <h1 class="text-center text-2xl font-semibold mb-4">Add Objective</h1>
+
+                <!-- Load form content dynamically -->
+                <div id="modalFormContent">
+                    <p class="text-center">Loading...</p>
+                </div>
+            </div>
         </div>
-    </footer>
+
+    </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Event listeners for action links (using event delegation)
-        document.querySelector('.grid').addEventListener('click', function (event) {
-            if (event.target.classList.contains('action-link') || event.target.parentNode.classList.contains('action-link')) {
-                const button = event.target.closest('.action-link');
-                if (!button) return; // Exit if the closest button is null
+        document.addEventListener("DOMContentLoaded", function () {
+        const openModalBtn = document.getElementById("openAddObjectiveModal");
+        const closeModalBtn = document.getElementById("closeAddObjectiveModal");
+        const modal = document.getElementById("addObjectiveModal");
+        const modalContent = document.getElementById("modalFormContent");
 
-                const ariaLabel = button.getAttribute('aria-label');
-                if (ariaLabel === 'Edit Objective') {
-                    alert('Edit Objective clicked!');
-                } else if (ariaLabel === 'Assign Objective') {
-                    alert('Assign Objective clicked!');
-                } else if (ariaLabel === 'View Objective Details') {
-                    alert('View Objective details clicked!');
-                }
+        // Open modal and load form via AJAX
+        openModalBtn.addEventListener("click", async function () {
+            modal.classList.remove("hidden"); // Show modal
+            try {
+                const response = await fetch("/Objective/AddObjective"); // Fetch form content
+                const html = await response.text();
+                modalContent.innerHTML = html; // Insert form into modal
+            } catch (error) {
+                modalContent.innerHTML = "<p class='text-red-500'>Error loading form.</p>";
             }
         });
 
-        // Filter and sort functionality (basic example)
-        document.getElementById('filterStatus').addEventListener('change', function () {
-            const selectedStatus = this.value;
-            alert('Filtering by status: ' + selectedStatus);
-            // Implement your filtering logic here
+        // Close modal when clicking the close button
+        closeModalBtn.addEventListener("click", function () {
+            modal.classList.add("hidden");
         });
 
-        document.getElementById('sortBy').addEventListener('change', function () {
-            const selectedSort = this.value;
-            alert('Sorting by: ' + selectedSort);
-            // Implement your sorting logic here
+        // Close modal when clicking outside the form
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.classList.add("hidden");
+            }
         });
     });
 </script>

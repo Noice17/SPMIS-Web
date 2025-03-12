@@ -7,34 +7,41 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<div class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
+    <div class="bg-gray-50 dark:bg-gray-900 px-6 py-3 rounded-md shadow-md border relative transition-colors duration-200">
+
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <header class="mb-8 flex justify-between items-center">
             <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Strategic Maps</h1>
             <div class="flex items-center space-x-4">
-                <button id="darkModeToggle" class="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg">
-                    <i class="fas fa-moon text-gray-800 dark:text-gray-200"></i>
-                </button>
-                <button id="openCreateMapModal" class="flex items-center bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+                <!-- Search Input with Icon -->
+                <div class="relative">
+                    <input type="text" id="search-maps" placeholder="Search Strategy Maps..."
+                           class="w-full sm:w-64 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i class="fas fa-search absolute right-3 top-3 text-gray-400 dark:text-gray-300"></i>
+                </div>
+
+                <!-- Filter Dropdown -->
+                <select id="filter-maps"
+                     class="px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all">All Maps</option>
+                    <option value="active">Active</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="completed">Completed</option>
+                </select>
+
+                <!-- Create New Map Button -->
+                <button id="openCreateMapModal"
+                        class="flex items-center bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
                     <i class="fas fa-plus mr-2"></i> Create New Map
+                </button>
+
+                <!-- Dark Mode Toggle -->
+                <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                    <i class="fas fa-moon text-gray-800 dark:text-gray-200"></i>
                 </button>
             </div>
         </header>
-
-        <!-- Search & Filter -->
-        <div class="flex items-center space-x-4 mb-4">
-            <div class="relative flex-grow">
-                <input type="text" id="search-maps" placeholder="Search strategy maps..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
-            </div>
-            <select id="filter-maps" class="px-4 py-2 border border-gray-300 rounded-lg">
-                <option value="all">All Maps</option>
-                <option value="active">Active</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="completed">Completed</option>
-            </select>
-        </div>
 
         <!-- Strategy Map List -->
         <div id="mapList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -42,31 +49,58 @@
             {
                 @foreach (var map in Model)
                 {
-                    <div class="map-card bg-white dark:bg-gray-800 rounded-lg shadow-md transition transform hover:scale-105 p-4" data-status="active">
+                    <div class="map-card bg-white dark:bg-gray-800 rounded-lg shadow-md transition transform hover:scale-105 p-4"
+                         data-status="@(map.MapEnd < DateTime.Now ? "completed" : (map.MapStart > DateTime.Now ? "upcoming" : "active"))">
+
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">@map.MapTitle</h3>
                         <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">@map.MapDescription</p>
                         <p class="text-gray-500 dark:text-gray-300 text-xs">@map.MapStart.ToString("yyyy-MM-dd") - @map.MapEnd.ToString("yyyy-MM-dd")</p>
-                        <a asp-action="ViewMap" asp-route-id="@map.MapId" class="mt-3 block text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            View Details
-                        </a>
+
+                        <div class="mt-3 flex justify-between items-center">
+                            <span class="inline-block px-2 py-1 text-xs rounded-full
+
+                                @(map.MapEnd < DateTime.Now ? "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300" :
+                                  (map.MapStart > DateTime.Now ? "bg-yellow-200 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-200" :
+                                  "bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200"))">
+                                @(map.MapEnd < DateTime.Now ? "Completed" : (map.MapStart > DateTime.Now ? "Upcoming" : "Active"))
+
+                            </span>
+
+                            <a asp-action="ViewMap" asp-route-id="@map.MapId" class="text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+                                View Details
+                            </a>
+
+                        </div>
                     </div>
                 }
             }
             else
             {
-                <div class="text-center text-gray-600 dark:text-gray-300">
-                    <p>No strategy maps found.</p>
+                <div class="col-span-3 text-center py-8 text-gray-600 dark:text-gray-300">
+                    <i class="fas fa-map-marked-alt text-4xl mb-4"></i>
+                    <p class="text-xl">No strategy maps found.</p>
+                    <p class="mt-2">Click "Create New Map" to get started.</p>
                 </div>
             }
+        </div>
+
+        <!-- No Results Message (Initially Hidden) -->
+        <div id="noResults" class="hidden text-center py-8 text-gray-600 dark:text-gray-300">
+            <i class="fas fa-search text-4xl mb-4"></i>
+            <p class="text-xl">No matching strategy maps found.</p>
+            <p class="mt-2">Try adjusting your search or filters.</p>
         </div>
     </div>
 
     <!-- Modal Container -->
-    <div id="createMapModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-        <div id="modalContent" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-1/3 relative">
-            <button id="closeModal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900">&times;</button>
+    <div id="createMapModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <div id="modalContent" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md mx-4 relative">
+            <button id="closeModal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 text-xl">&times;</button>
             <div id="modalBody">
                 <!-- Form will be loaded here dynamically -->
+                <div class="flex justify-center items-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -74,6 +108,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Modal functionality
         const modal = document.getElementById('createMapModal');
         const openModalBtn = document.getElementById('openCreateMapModal');
         const closeModalBtn = document.getElementById('closeModal');
@@ -81,27 +116,120 @@
 
         // Open modal and load form
         openModalBtn.addEventListener('click', async () => {
+            modal.classList.remove('hidden');
             try {
                 const response = await fetch('@Url.Action("CreateMap", "Map")');
                 const html = await response.text();
                 modalBody.innerHTML = html;
-                modal.classList.remove('hidden');
             } catch (error) {
                 console.error('Error loading modal content:', error);
+                modalBody.innerHTML = '<div class="text-center text-red-500"><p>Error loading form. Please try again.</p></div>';
             }
         });
 
         // Close modal
         closeModalBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
-            modalBody.innerHTML = ''; // Clear modal content
         });
 
         // Close modal on overlay click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.classList.add('hidden');
-                modalBody.innerHTML = ''; // Clear modal content
+            }
+        });
+
+        // Search and filter functionality
+        const searchInput = document.getElementById('search-maps');
+        const filterSelect = document.getElementById('filter-maps');
+        const mapCards = document.querySelectorAll('.map-card');
+        const mapList = document.getElementById('mapList');
+        const noResults = document.getElementById('noResults');
+
+        function filterMaps() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const filterValue = filterSelect.value;
+            let visibleCount = 0;
+
+            mapCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p:nth-child(2)').textContent.toLowerCase();
+                const dateText = card.querySelector('p:nth-child(3)').textContent.toLowerCase();
+                const status = card.dataset.status;
+
+                // Check if card matches search term and filter
+                const matchesSearch = searchTerm === '' ||
+                                     title.includes(searchTerm) ||
+                                     description.includes(searchTerm) ||
+                                     dateText.includes(searchTerm);
+
+                const matchesFilter = filterValue === 'all' || status === filterValue;
+
+                // Show/hide the card based on both conditions
+                if (matchesSearch && matchesFilter) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                mapList.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            } else {
+                mapList.classList.remove('hidden');
+                noResults.classList.add('hidden');
+            }
+        }
+
+        // Add event listeners for search and filter
+        searchInput.addEventListener('input', filterMaps);
+        filterSelect.addEventListener('change', filterMaps);
+
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const moonIcon = darkModeToggle.querySelector('i');
+
+        // Check for saved theme preference or use system preference
+        function getThemePreference() {
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                return true;
+            }
+            if (localStorage.getItem('darkMode') === 'disabled') {
+                return false;
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        // Apply theme
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                moonIcon.classList.remove('fa-moon');
+                moonIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.classList.remove('dark');
+                moonIcon.classList.remove('fa-sun');
+                moonIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Initialize theme
+        applyTheme(getThemePreference());
+
+        // Toggle theme
+        darkModeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+
+            if (isDark) {
+                moonIcon.classList.remove('fa-moon');
+                moonIcon.classList.add('fa-sun');
+            } else {
+                moonIcon.classList.remove('fa-sun');
+                moonIcon.classList.add('fa-moon');
             }
         });
     });
