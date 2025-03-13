@@ -1,0 +1,135 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPMIS - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script> <!-- FontAwesome -->
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300">
+    <div class="flex flex-col md:flex-row bg-white shadow-2xl rounded-lg overflow-hidden w-full max-w-8xl h-[100vh] motion-safe:animate-fade-in">
+
+        <!-- Left Side (Logo Panel) -->
+        <div class="hidden md:flex w-7/10 justify-center items-center bg-gray-200 bg-cover bg-center p-10"
+             style="background-image: url('@Url.Content("~/background.jpg")');">
+            <img src="@Url.Content("~/spmis4.png")" alt="SPMIS Logo" class="max-w-[110%] max-h-[500%] object-contain">
+        </div>
+
+        <!-- Right Side (Login Form) -->
+        <div class="w-full md:w-2/5 p-10 bg-white flex flex-col justify-center items-center h-full">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4 text-center">Welcome Back</h2>
+            <p class="text-gray-500 mb-6 text-center">Sign in to continue</p>
+
+            <!-- Error Message Section -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm flex items-center gap-2 motion-safe:animate-fade-in">
+                    <span class="font-bold">⚠️</span>
+                    <div>
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <p>• @error.ErrorMessage</p>
+                        }
+                    </div>
+                </div>
+            }
+
+            <form method="post" class="space-y-4 w-full max-w-md" id="loginFormSubmit">
+                <div>
+                    <label class="block text-gray-600 text-sm font-medium">E-mail Address</label>
+                    <input type="text" name="username" placeholder="Enter your email"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
+                </div>
+
+                <!-- Password Input with Toggle -->
+                <div class="relative">
+                    <label class="block text-gray-600 text-sm font-medium">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="passwordInput" placeholder="Enter your password"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm pr-12">
+                        <button type="button" id="togglePassword" class="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-gray-700" aria-label="Toggle password visibility">
+                            <i id="eyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <p id="capsLockWarning" class="text-yellow-500 text-sm mt-1 hidden">⚠ Caps Lock is ON</p>
+                </div>
+
+                <div class="flex justify-between items-center text-sm w-full">
+                    <label class="flex items-center text-gray-600">
+                        <input type="checkbox" class="mr-2 accent-blue-600">
+                        Keep me signed in
+                    </label>
+                    <a href="#" class="text-blue-600 hover:underline">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 rounded-md hover:opacity-90 transition shadow-md flex justify-center items-center" id="signInBtn">
+                    <span id="signInText">Sign In</span>
+                    <div class="ml-2 w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin hidden" id="loadingSpinner"></div>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="flex items-center my-6 w-full max-w-md">
+                <div class="w-full h-[1px] bg-gray-300"></div>
+                <span class="px-3 text-gray-500 text-sm">or</span>
+                <div class="w-full h-[1px] bg-gray-300"></div>
+            </div>
+
+            <!-- Google Login Button -->
+            <a href="@Url.Action("GoogleLogin", "Account")"
+               class="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 py-3 rounded-md hover:bg-gray-100 transition shadow-md max-w-md">
+                <img src="@Url.Content("~/google.png")" class="w-5 h-5">
+                <span>Login with Google</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginFormSubmit").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let signInBtn = document.getElementById("signInBtn");
+            let loadingSpinner = document.getElementById("loadingSpinner");
+            let signInText = document.getElementById("signInText");
+
+            signInBtn.disabled = true;
+            loadingSpinner.classList.remove("hidden");
+            signInText.textContent = "Signing In...";
+
+            setTimeout(() => {
+                this.submit();
+            }, 2000);
+        });
+
+        // Toggle Password Visibility
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            let passwordInput = document.getElementById("passwordInput");
+            let eyeIcon = document.getElementById("eyeIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        });
+
+        // Caps Lock Warning
+        document.getElementById("passwordInput").addEventListener("keyup", function (event) {
+            let capsLockWarning = document.getElementById("capsLockWarning");
+            if (event.getModifierState("CapsLock")) {
+                capsLockWarning.classList.remove("hidden");
+            } else {
+                capsLockWarning.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+</html>

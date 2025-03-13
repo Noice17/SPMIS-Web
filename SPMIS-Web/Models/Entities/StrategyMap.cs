@@ -30,6 +30,7 @@ namespace SPMIS_Web.Models.Entities
             MapDescription = string.Empty; // Default value
             MapTitle = string.Empty; // Default value
         }
+        public List<ObjectiveType> ObjectiveType { get; set; } = new List<ObjectiveType>();
 
         public List<Objective> Objective { get; set; } = new List<Objective>();    }
 }

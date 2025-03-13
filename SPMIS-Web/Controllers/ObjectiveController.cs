@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SPMIS_Web.Models.Entities;
 using SPMIS_Web.Models.ViewModels;
-using SPMIS_Web.Data.DataAccessLayer; // Corrected namespace for ObjectiveService
+using SPMIS_Web.Data.DataAccessLayer;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SPMIS_Web.Controllers
 {
@@ -29,7 +30,7 @@ namespace SPMIS_Web.Controllers
             var model = new AddObjectiveViewModel
             {
                 MapId = mapId,
-                ObjectiveType = await _objectiveService.GetObjectiveTypes() // Fetch ObjectiveType from DB
+                ObjectiveType = await _objectiveService.GetObjectiveTypes()
             };
 
             return View(model);
@@ -37,24 +38,25 @@ namespace SPMIS_Web.Controllers
 
         // POST: Add Objective
         [HttpPost]
-        public async Task<IActionResult> AddObjective(AddObjectiveViewModel model)
+        public async Task<IActionResult> AddObjective([FromBody] AddObjectiveViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                model.ObjectiveType = await _objectiveService.GetObjectiveTypes(); // Reload dropdown data
-                return View(model);
+                return BadRequest(new { message = "Invalid input data." });
             }
 
             var newObjective = new Objective
             {
                 ObjectiveDescription = model.ObjectiveDescription,
-                ObjectiveTypeId = model.ObjectTypeId, // Assign selected ObjectTypeId
+                ObjectiveTypeId = model.ObjectTypeId,
                 MapId = model.MapId
             };
 
             await _objectiveService.AddObjective(newObjective);
-            return RedirectToAction("AddObjective", "Objective");
+
+            return Json(new { success = true, message = "Objective added successfully!" });
         }
+        
 
         // GET: Load Add Objective Type form
         [HttpGet]
@@ -100,6 +102,21 @@ namespace SPMIS_Web.Controllers
             }
 
             return Json(new { message = "Objective Type updated successfully!" });
+        }
+
+        // GET: Retrieve Objective Types for JSON response
+        [HttpGet]
+        public async Task<IActionResult> GetObjectiveTypes()
+        {
+            var types = await _objectiveService.GetObjectiveTypes();
+
+            var result = types.Select(t => new  
+            {
+                t.ObjectiveTypeId,
+                t.ObjectiveTypeName
+            }).ToList();
+
+            return Json(result);
         }
     }
 }
