@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SPMIS_Web.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SPMIS_Web.Data;
+using SPMIS_Web.Models.Entities;
+using SPMIS_Web.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SPMIS_Web.Controllers
 {
@@ -27,7 +30,10 @@ namespace SPMIS_Web.Controllers
         {
             ViewData["ActivePage"] = "StrategyMap"; // Highlight Strategy Map
 
-            var maps = _context.StrategyMaps.OrderByDescending(m => m.MapStart).ToList();
+            var maps = _context.StrategyMaps
+                .OrderByDescending(m => m.MapStart)
+                .ToList();
+
             return View(maps);
         }
 
@@ -41,29 +47,41 @@ namespace SPMIS_Web.Controllers
 
             if (map == null)
             {
-                return NotFound(); // Handle case when map is not found
+                return NotFound();
             }
 
-            return View(map);
+            // Ensure we pass the correct ViewModel
+            var viewModel = new AddObjectiveTypeViewModel
+            {
+                MapId = map.MapId,
+                MapTitle = map.MapTitle,
+                MapStart = map.MapStart,
+                MapEnd = map.MapEnd,
+                Objective = map.Objective?.ToList() ?? new List<Objective>()
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
         public IActionResult CreateMap()
         {
-            return PartialView("CreateMap"); // Use a Partial View
+            return PartialView("CreateMap"); // Load as Partial View
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMap(StrategyMap model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                model.MapId = Guid.NewGuid();
-                _context.StrategyMaps.Add(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("StrategicMap"); // Redirects to the view that lists maps
+                return View(model);
             }
-            return View(model);
+
+            model.MapId = Guid.NewGuid();
+            _context.StrategyMaps.Add(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("StrategicMap");
         }
 
         [HttpGet]
@@ -79,5 +97,23 @@ namespace SPMIS_Web.Controllers
 
             return View(items);
         }
+
+        [HttpGet]
+        public IActionResult AddObjectivePartial(Guid MapId)
+        {
+            var viewModel = new AddObjectiveTypeViewModel
+            {
+                MapId = MapId,
+                ObjectiveType = _context.ObjectiveTypes
+                    .Select(o => new ObjectiveType
+                    {
+                        ObjectiveTypeId = o.ObjectiveTypeId,
+                        ObjectiveTypeName = o.ObjectiveTypeName
+                    }).ToList()
+            };
+
+            return PartialView("_AddObjectivePartial", viewModel);
+        }
+
     }
 }

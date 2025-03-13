@@ -31,3 +31,32 @@
         <button type="submit" class="px-6 py-2 bg-teal-400 text-white font-semibold rounded-full shadow-md hover:bg-teal-500">Submit</button>
     </div>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#addObjectiveForm").submit(function (e) {
+            e.preventDefault(); // Prevent full-page reload
+
+            $.ajax({
+                url: "/Map/ViewMap", // Ensure correct URL
+                type: "POST",
+                data: $(this).serialize(), // Send form data
+                success: function (response) {
+                    $("#addObjectiveModal").modal("hide"); // Close modal
+                    alert("Objective added successfully!"); // Feedback message
+
+                    // Reload the objective list (assuming you have a function to do this)
+                    loadObjectives();
+                },
+                error: function () {
+                    alert("Error adding objective.");
+                }
+            });
+        });
+    });
+
+    function loadObjectives() {
+        $("#objectiveList").load("/Objective/ObjectiveTypeList"); // Reloads list
+    }
+</script>
