@@ -60,12 +60,7 @@ namespace SPMIS_Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("StrategyMapMapId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("ObjectiveTypeId");
-
-                    b.HasIndex("StrategyMapMapId");
 
                     b.ToTable("ObjectiveTypes");
                 });
@@ -102,7 +97,7 @@ namespace SPMIS_Web.Migrations
             modelBuilder.Entity("SPMIS_Web.Models.Entities.Objective", b =>
                 {
                     b.HasOne("SPMIS_Web.Models.Entities.StrategyMap", "Map")
-                        .WithMany("Objective")
+                        .WithMany()
                         .HasForeignKey("MapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -116,20 +111,6 @@ namespace SPMIS_Web.Migrations
                     b.Navigation("Map");
 
                     b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("SPMIS_Web.Models.Entities.ObjectiveType", b =>
-                {
-                    b.HasOne("SPMIS_Web.Models.Entities.StrategyMap", null)
-                        .WithMany("ObjectiveType")
-                        .HasForeignKey("StrategyMapMapId");
-                });
-
-            modelBuilder.Entity("SPMIS_Web.Models.Entities.StrategyMap", b =>
-                {
-                    b.Navigation("Objective");
-
-                    b.Navigation("ObjectiveType");
                 });
 #pragma warning restore 612, 618
         }
