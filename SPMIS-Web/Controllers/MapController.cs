@@ -98,22 +98,24 @@ namespace SPMIS_Web.Controllers
             return View(items);
         }
 
-        [HttpGet]
-        public IActionResult AddObjectivePartial(Guid MapId)
-        {
-            var viewModel = new AddObjectiveTypeViewModel
-            {
-                MapId = MapId,
-                ObjectiveType = _context.ObjectiveTypes
-                    .Select(o => new ObjectiveType
-                    {
-                        ObjectiveTypeId = o.ObjectiveTypeId,
-                        ObjectiveTypeName = o.ObjectiveTypeName
-                    }).ToList()
-            };
 
-            return PartialView("_AddObjectivePartial", viewModel);
-        }
+        // ---- DO NOT USE: Function is moved to AddObjective in the Objective Controller  ---
+        //[HttpGet]
+        //public IActionResult AddObjectivePartial(Guid MapId)
+        //{
+        //    var viewModel = new AddObjectiveTypeViewModel
+        //    {
+        //        MapId = MapId,
+        //        ObjectiveType = _context.ObjectiveTypes
+        //            .Select(o => new ObjectiveType
+        //            {
+        //                ObjectiveTypeId = o.ObjectiveTypeId,
+        //                ObjectiveTypeName = o.ObjectiveTypeName
+        //            }).ToList()
+        //    };
+
+        //    return PartialView("_AddObjectivePartial", viewModel);
+        //}
 
     }
 }

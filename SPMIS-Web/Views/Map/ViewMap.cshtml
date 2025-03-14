@@ -82,6 +82,7 @@
 </div>
 
 <!-- JavaScript to Open & Close Modal -->
+<!-- EDITED: BEFORE: /Map/AddObjectivePatial -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById("addObjectiveModal");
@@ -93,7 +94,8 @@
             modal.classList.add("flex");
 
             // Load the AddObjectivePartial dynamically with correct mapId
-            $("#addObjectiveContainer").load(`/Map/AddObjectivePartial?mapId=@Model.MapId`);
+            
+            $("#addObjectiveContainer").load(`/Objective/AddObjective?mapId=@Model.MapId`);
         });
 
         window.closeModal = function () {

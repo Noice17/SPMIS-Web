@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SPMIS_Web.Controllers
 {
@@ -24,17 +25,23 @@ namespace SPMIS_Web.Controllers
         }
 
         // GET: Load Add Objective form with dropdown values
-        //[HttpGet]
-        //public async Task<IActionResult> AddObjective(Guid mapId)
-        //{
-        //    var model = new AddObjectiveViewModel
-        //    {
-        //        MapId = mapId,
-        //        ObjectiveType = await _objectiveService.GetObjectiveTypes()
-        //    };
+        [HttpGet]
+        public async Task<IActionResult> AddObjective(Guid mapId)
+        {
+            var objectiveTypes = await _objectiveService.GetObjectiveTypes();
 
-        //    return View("AddObjective", model); //Load as partial view
-        //}
+            var model = new AddObjectiveViewModel
+            {
+                MapId = mapId,
+                ObjectiveType = objectiveTypes.Select(o => new ObjectiveType
+                {
+                    ObjectiveTypeId = o.ObjectiveTypeId,
+                    ObjectiveTypeName = o.ObjectiveTypeName
+                }).ToList()
+            };
+
+            return PartialView("AddObjective", model); //Load as partial view
+        }
 
         // POST: Add Objective
         [HttpPost]

@@ -34,6 +34,7 @@ namespace SPMIS_Web.Data.DataAccessLayer
             return await _dbContext.ObjectiveTypes.ToListAsync();
         }
 
+
         //Edit the same page
         public async Task<bool> UpdateObjectiveType(Guid id, string newName)
         {
