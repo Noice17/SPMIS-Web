@@ -1,7 +1,7 @@
 ﻿@model SPMIS_Web.Models.ViewModels.AddObjectiveTypeViewModel
 
-<form method="post" asp-action="AddObjective">
-    <input type="hidden" name="mapId" value="@Model.MapId" />
+<form id="addObjectiveForm" method="post" asp-controller="Objective" asp-action="AddObjective">
+    <input type="hidden" name="MapId" value="@Model.MapId" />
 
     <div class="mb-4">
         <label for="objectiveDescription" class="block font-semibold">Objective Description</label>
@@ -26,7 +26,6 @@
         </select>
     </div>
 
-
     <div class="flex justify-center">
         <button type="submit" class="px-6 py-2 bg-teal-400 text-white font-semibold rounded-full shadow-md hover:bg-teal-500">Submit</button>
     </div>
@@ -35,28 +34,36 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#addObjectiveForm").submit(function (e) {
-            e.preventDefault(); // Prevent full-page reload
+        $("#addObjectiveContainer").on("submit", "form", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = $(this);
+            var url = form.attr("action");
 
             $.ajax({
-                url: "/Map/ViewMap", // Ensure correct URL
                 type: "POST",
-                data: $(this).serialize(), // Send form data
+                url: url,
+                data: JSON.stringify(form.serializeArray().reduce((acc, item) => {
+                    acc[item.name] = item.value;
+                    return acc;
+                }, {})),
+                contentType: "application/json",
                 success: function (response) {
-                    $("#addObjectiveModal").modal("hide"); // Close modal
-                    alert("Objective added successfully!"); // Feedback message
-
-                    // Reload the objective list (assuming you have a function to do this)
-                    loadObjectives();
+                    if (response.success) {
+                        // alert(response.message); Show success message (optional)
+                        closeModal(); // Close the modal
+                        location.reload(); // Reload the page to reflect changes (Optional: Use AJAX instead)
+                    }
                 },
-                error: function () {
-                    alert("Error adding objective.");
+                error: function (xhr) {
+                    alert("Error: " + xhr.responseText);
                 }
             });
         });
-    });
 
-    function loadObjectives() {
-        $("#objectiveList").load("/Objective/ObjectiveTypeList"); // Reloads list
-    }
+        window.closeModal = function () {
+            $("#addObjectiveModal").addClass("hidden").removeClass("flex");
+        };
+    });
 </script>
+

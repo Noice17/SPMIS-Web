@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SPMIS_Web.Data; // Ensure this matches your namespace
+using SPMIS_Web.Data;
+using SPMIS_Web.Data.DataAccessLayer; // Ensure this matches your namespace
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/Login";
     });
+
+// Add Objective Service
+builder.Services.AddScoped<ObjectiveService>();
+
 
 builder.Services.AddAuthorization();
 

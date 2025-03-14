@@ -24,17 +24,17 @@ namespace SPMIS_Web.Controllers
         }
 
         // GET: Load Add Objective form with dropdown values
-        [HttpGet]
-        public async Task<IActionResult> AddObjective(Guid mapId)
-        {
-            var model = new AddObjectiveViewModel
-            {
-                MapId = mapId,
-                ObjectiveType = await _objectiveService.GetObjectiveTypes()
-            };
+        //[HttpGet]
+        //public async Task<IActionResult> AddObjective(Guid mapId)
+        //{
+        //    var model = new AddObjectiveViewModel
+        //    {
+        //        MapId = mapId,
+        //        ObjectiveType = await _objectiveService.GetObjectiveTypes()
+        //    };
 
-            return View("AddObjective", model); //Load as partial view
-        }
+        //    return View("AddObjective", model); //Load as partial view
+        //}
 
         // POST: Add Objective
         [HttpPost]
@@ -55,6 +55,7 @@ namespace SPMIS_Web.Controllers
             await _objectiveService.AddObjective(newObjective);
 
             return Json(new { success = true, message = "Objective added successfully!" });
+            //return RedirectToAction("_AddObjective", "Map");
         }
         
 
