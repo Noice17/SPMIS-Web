@@ -61,6 +61,14 @@ namespace SPMIS_Web.Data.DataAccessLayer
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<Objective?> GetObjectiveByIdAsync(Guid objectiveId)
+        {
+            return await _dbContext.Objectives
+                                 .Include(o => o.Type)
+                                 .FirstOrDefaultAsync(o => o.ObjectiveId == objectiveId);
+        }
+
+
 
     }
 }

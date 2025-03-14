@@ -54,9 +54,14 @@
                         </div>
 
                         <footer class="pt-3 border-t border-gray-200 flex justify-between">
-                            <button id="openUpdateObjectiveBtn" class="text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2">
+                            @* <button id="openUpdateObjectiveBtn" class="text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2"> *@
+                            @*     <i class="fas fa-edit"></i>Edit *@
+                            @* </button> *@
+                            <button class="openUpdateObjectiveBtn text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2"
+                                    data-objectiveid="@objective.ObjectiveId">
                                 <i class="fas fa-edit"></i>Edit
                             </button>
+
                             <button class="text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2">
                                 <i class="fas fa-user-plus"></i>Assign
                             </button>
@@ -103,7 +108,7 @@
     <div class="bg-white p-6 rounded-lg shadow-md border w-96 relative">
         <button class="absolute top-2 right-2 text-gray-500 hover:text-red-500" onclick="closeModal()">&times;</button>
 
-        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Update @Model.ObjectiveDescription</h1>
+        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Update Objective</h1>
 
         <div id="updateObjectiveContainer"></div>
     </div>
@@ -160,18 +165,44 @@
 </script>
 
 <!--Update Objective-->
+@* <script> *@
+@*     document.addEventListener('DOMContentLoaded', function () { *@
+@*         const modal = document.getElementById("updateObjectiveModal"); *@
+@*         const openBtn = document.getElementById("openUpdateObjectiveBtn"); *@
+
+@*         openBtn.addEventListener("click", function () { *@
+@*             console.log("Opening Modal"); *@
+@*             modal.classList.remove("hidden"); *@
+@*             modal.classList.add("flex"); *@
+
+
+@*             $("#updateMapContainer").load(`/Objective/UpdateObjective?mapId=@Model.MapId`); *@
+@*         }); *@
+
+@*         window.closeModal = function () { *@
+@*             console.log("Closing Modal"); *@
+@*             modal.classList.add("hidden"); *@
+@*             modal.classList.remove("flex"); *@
+@*         }; *@
+@*     }); *@
+@* </script> *@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById("updateObjectiveModal");
-        const openBtn = document.getElementById("openUpdateObjectiveBtn");
+        const updateContainer = document.getElementById("updateObjectiveContainer");
 
-        openBtn.addEventListener("click", function () {
-            console.log("Opening Modal");
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
+        // Event delegation for dynamically loaded elements
+        document.addEventListener("click", function (event) {
+            if (event.target.closest(".openUpdateObjectiveBtn")) {
+                let objectiveId = event.target.closest(".openUpdateObjectiveBtn").getAttribute("data-objectiveid");
+                console.log("Opening Modal for Objective ID:", objectiveId);
 
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
 
-            $("#updateMapContainer").load(`/Objective/UpdateObjective?mapId=@Model.MapId`);
+                // Load the UpdateObjectivePartial dynamically with the correct objectiveId
+                $("#updateObjectiveContainer").load(`/Objective/UpdateObjective?objectiveId=${objectiveId}`);
+            }
         });
 
         window.closeModal = function () {

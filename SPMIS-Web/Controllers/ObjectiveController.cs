@@ -65,13 +65,39 @@ namespace SPMIS_Web.Controllers
             //return RedirectToAction("_AddObjective", "Map");
         }
 
-        // Update Objective
+        // GET: Update Objective
         [HttpGet]
-        public async Task<IActionResult> UpdateObjective()
+        public async Task<IActionResult> UpdateObjective(Guid objectiveId)
         {
+            var objectiveTypes = await _objectiveService.GetObjectiveTypes();
 
-            return PartialView("UpdateObjective"); //Load as partial view
+            if (objectiveId == Guid.Empty)
+            {
+                return BadRequest("Invalid Objective ID");
+            }
+
+            var objective = await _objectiveService.GetObjectiveByIdAsync(objectiveId);
+
+            if (objective == null)
+            {
+                return NotFound("Objective not found");
+            }
+
+            var viewModel = new AddObjectiveTypeViewModel
+            {
+                ObjectiveDescription = objective.ObjectiveDescription,
+                ObjectiveType = objectiveTypes.Select(o => new ObjectiveType
+                {
+                    ObjectiveTypeId = o.ObjectiveTypeId,
+                    ObjectiveTypeName = o.ObjectiveTypeName
+                }).ToList(),
+                MapId = objective.MapId
+            };
+
+            return PartialView("UpdateObjective", viewModel);
         }
+
+
 
 
 
