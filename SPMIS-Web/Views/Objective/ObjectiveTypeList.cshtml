@@ -1,60 +1,78 @@
 ﻿@model List<SPMIS_Web.Models.Entities.ObjectiveType>
 
+<div class="bg-gray-100 min-h-screen py-6">
+    <div class="container mx-auto max-w-4xl bg-white shadow-md rounded-2xl overflow-hidden">
+        <!-- Header Section -->
+        <div class="bg-gray-50 border-b border-gray-200 py-4 px-6">
+            <h1 class="text-2xl font-semibold text-gray-700 text-center">Objective Types</h1>
 
-<div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-semibold">Objective Types</h1>
-    <a class="px-4 py-2 border border-gray-700 text-gray-700 rounded hover:bg-gray-700 hover:text-white transition"
-       asp-controller="Objective" asp-action="AddObjectiveType">
-        Add Objective Type
-    </a>
+            <a class="px-4 py-2 border border-gray-700 text-gray-700 rounded hover:bg-gray-700 hover:text-white transition"
+               asp-controller="Objective" asp-action="AddObjectiveType">
+                Add Objective Type
+            </a>
+        </div>
+
+        <!-- Table Section -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                            #
+                        </th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                            Objective Type
+                        </th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider border-b border-gray-200">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  @if (Model != null && Model.Any())
+                  {
+                        int count = 1;
+                        @foreach (var objectiveType in Model)
+                        {
+                            <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                    @count
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                    <span class="view-mode" id="nameDisplay_@objectiveType.ObjectiveTypeId">@objectiveType.ObjectiveTypeName</span>
+                                    <input type="text" class="edit-mode hidden border p-1" id="nameInput_@objectiveType.ObjectiveTypeId" value="@objectiveType.ObjectiveTypeName" />
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                    <button class="px-2 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition"
+                                            id="editBtn_@objectiveType.ObjectiveTypeId" onclick="editObjective('@objectiveType.ObjectiveTypeId')">
+                                        Edit
+                                    </button>
+                                    <button class="px-2 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition hidden"
+                                            id="saveBtn_@objectiveType.ObjectiveTypeId" onclick="saveObjective('@objectiveType.ObjectiveTypeId')">
+                                        Save
+                                    </button>
+                                    <button class="px-2 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition hidden"
+                                            id="cancelBtn_@objectiveType.ObjectiveTypeId" onclick="cancelEdit('@objectiveType.ObjectiveTypeId')">
+                                        Cancel
+                                    </button>
+                                </td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center p-4">No objective types found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<table class="w-full border-collapse border border-gray-300">
-    <thead>
-        <tr class="bg-gray-200">
-            <th class="border border-gray-300 px-4 py-2">#</th>
-            <th class="border border-gray-300 px-4 py-2">Objective Type</th>
-            <th class="border border-gray-300 px-4 py-2">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            int count = 1;
-            @foreach (var objectiveType in Model)
-            {
-                <tr class="border border-gray-300">
-                    <td class="border border-gray-300 px-4 py-2">@count</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <span class="view-mode" id="nameDisplay_@objectiveType.ObjectiveTypeId">@objectiveType.ObjectiveTypeName</span>
-                        <input type="text" class="edit-mode hidden border p-1" id="nameInput_@objectiveType.ObjectiveTypeId" value="@objectiveType.ObjectiveTypeName" />
-                    </td>
-                    <td class="border border-gray-300 px-4 py-2 space-x-2">
-                        <button class="px-2 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition"
-                                id="editBtn_@objectiveType.ObjectiveTypeId" onclick="editObjective('@objectiveType.ObjectiveTypeId')">
-                            Edit
-                        </button>
-                        <button class="px-2 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition hidden"
-                                id="saveBtn_@objectiveType.ObjectiveTypeId" onclick="saveObjective('@objectiveType.ObjectiveTypeId')">
-                            Save
-                        </button>
-                        <button class="px-2 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition hidden"
-                                id="cancelBtn_@objectiveType.ObjectiveTypeId" onclick="cancelEdit('@objectiveType.ObjectiveTypeId')">
-                            Cancel
-                        </button>
-                    </td>
-                </tr>
-                count++;
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="3" class="text-center p-4">No objective types found.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
 
 <script>
     function editObjective(id) {

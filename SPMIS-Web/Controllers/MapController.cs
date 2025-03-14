@@ -98,6 +98,55 @@ namespace SPMIS_Web.Controllers
             return View(items);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UpdateMap(Guid mapId)
+        {
+            var map = await _context.StrategyMaps
+                .Where(m => m.MapId == mapId)
+                .Select(m => new StrategyMap
+                {
+                    MapId = m.MapId,
+                    MapTitle = m.MapTitle,
+                    MapDescription = m.MapDescription,
+                    MapStart = m.MapStart,
+                    MapEnd = m.MapEnd
+                }).FirstOrDefaultAsync();
+
+            if (map == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("UpdateMap", map);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateMap(StrategyMap model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var map = await _context.StrategyMaps.FindAsync(model.MapId);
+            if (map == null)
+            {
+                return NotFound();
+            }
+
+            map.MapTitle = model.MapTitle;
+            map.MapDescription = model.MapDescription;
+            map.MapStart = model.MapStart;
+            map.MapEnd = model.MapEnd;
+
+            _context.StrategyMaps.Update(map);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+
+
 
         // ---- DO NOT USE: Function is moved to AddObjective in the Objective Controller  ---
         //[HttpGet]

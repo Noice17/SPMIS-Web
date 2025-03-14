@@ -1,0 +1,66 @@
+﻿@* @model SPMIS_Web.Models.ViewModels.UpdateMapViewModel *@
+@model SPMIS_Web.Models.Entities.StrategyMap
+
+<form id="updateMapForm" method="post" asp-controller="Map" asp-action="UpdateMap">
+    <input type="hidden" name="MapId" value="@Model.MapId" />
+
+    <div class="mb-4">
+        <label for="mapTitle" class="block font-semibold">Map Title</label>
+        <input type="text" id="mapTitle" name="MapTitle" value="@Model.MapTitle"
+               class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="mapDescription" class="block font-semibold">Map Title</label>
+        <input type="text" id="mapDescription" name="MapDescription" value="@Model.MapDescription"
+               class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="mapStart" class="block font-semibold">Start Date</label>
+        <input type="date" id="mapStart" name="MapStart" value="@Model.MapStart.ToString("yyyy-MM-dd")"
+               class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="mapEnd" class="block font-semibold">End Date</label>
+        <input type="date" id="mapEnd" name="MapEnd" value="@Model.MapEnd.ToString("yyyy-MM-dd")"
+               class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
+    </div>
+
+    <div class="flex justify-center">
+        <button type="submit" class="px-6 py-2 bg-teal-400 text-white font-semibold rounded-full shadow-md hover:bg-teal-500">Update</button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $("#updateMapForm").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = $(this);
+            var url = form.attr("action");
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        closeModal(); // Close modal on success
+                        location.reload(); // Reload the page
+                    } else {
+                        alert("Error updating map.");
+                    }
+                },
+                error: function (xhr) {
+                    alert("Error: " + xhr.responseText);
+                }
+            });
+        });
+
+        window.closeModal = function () {
+            $("#updateMapModal").addClass("hidden").removeClass("flex");
+        };
+    });
+</script>

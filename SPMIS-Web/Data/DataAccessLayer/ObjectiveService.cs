@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SPMIS_Web.Models.Entities;
+using SPMIS_Web.Models.ViewModels;
 
 namespace SPMIS_Web.Data.DataAccessLayer
 {
@@ -9,7 +10,7 @@ namespace SPMIS_Web.Data.DataAccessLayer
         public readonly ApplicationDbContext _dbContext;
         public ObjectiveService(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+             _dbContext = dbContext;
         }
         //Create
         public async Task AddObjectiveType(ObjectiveType objectiveType)
@@ -33,7 +34,6 @@ namespace SPMIS_Web.Data.DataAccessLayer
         {
             return await _dbContext.ObjectiveTypes.ToListAsync();
         }
-
 
         //Edit the same page
         public async Task<bool> UpdateObjectiveType(Guid id, string newName)

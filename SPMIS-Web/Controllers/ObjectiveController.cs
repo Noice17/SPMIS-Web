@@ -64,7 +64,19 @@ namespace SPMIS_Web.Controllers
             return Json(new { success = true, message = "Objective added successfully!" });
             //return RedirectToAction("_AddObjective", "Map");
         }
-        
+
+        // Update Objective
+        [HttpGet]
+        public async Task<IActionResult> UpdateObjective()
+        {
+
+            return PartialView("UpdateObjective"); //Load as partial view
+        }
+
+
+
+
+
 
         // GET: Load Add Objective Type form
         [HttpGet]
