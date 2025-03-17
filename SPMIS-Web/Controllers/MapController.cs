@@ -20,10 +20,16 @@ namespace SPMIS_Web.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    ViewData["ActivePage"] = "Index"; // Highlight Strategy Map
+
+        //    var maps = _context.StrategyMaps
+        //        .OrderByDescending(m => m.MapStart)
+        //        .ToList();
+
+        //    return View(maps);
+        //}
 
         [HttpGet]
         public IActionResult StrategicMap()
@@ -81,7 +87,7 @@ namespace SPMIS_Web.Controllers
             _context.StrategyMaps.Add(model);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("StrategicMap");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
