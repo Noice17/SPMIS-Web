@@ -83,8 +83,9 @@ namespace SPMIS_Web.Controllers
                 return NotFound("Objective not found");
             }
 
-            var viewModel = new AddObjectiveTypeViewModel
+            var viewModel = new UpdateObjectiveViewModel
             {
+                ObjectiveId = objectiveId,
                 ObjectiveDescription = objective.ObjectiveDescription,
                 ObjectiveType = objectiveTypes.Select(o => new ObjectiveType
                 {
@@ -97,9 +98,28 @@ namespace SPMIS_Web.Controllers
             return PartialView("UpdateObjective", viewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateObjective([FromBody] UpdateObjectiveViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Invalid input data." });
+            }
 
+            var existingObjective = await _objectiveService.GetObjectiveByIdAsync(model.ObjectiveId);
+            if (existingObjective == null)
+            {
+                return NotFound(new { success = false, message = "Objective not found." });
+            }
 
+            existingObjective.ObjectiveDescription = model.ObjectiveDescription;
+            existingObjective.ObjectiveTypeId = model.ObjectiveTypeId;
+            existingObjective.MapId = model.MapId;
 
+            await _objectiveService.UpdateObjectiveAsync(existingObjective);
+
+            return Json(new { success = true, message = "Objective updated successfully!" });
+        }
 
 
 

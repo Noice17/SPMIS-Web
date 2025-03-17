@@ -12,7 +12,49 @@ namespace SPMIS_Web.Data.DataAccessLayer
         {
              _dbContext = dbContext;
         }
-        //Create
+
+
+        // UPDATE Objective
+        //public async Task UpdateObjective(Objective objective)
+        //{
+        //    Console.WriteLine($"Updating Objective with ID: {objective.ObjectiveId}"); // Debugging Log
+
+        //    var existingObjective = await _dbContext.Objectives.FindAsync(objective.ObjectiveId);
+
+        //    if (existingObjective == null)
+        //    {
+        //        Console.WriteLine($"Objective not found: {objective.ObjectiveId}"); // Debugging Log
+        //        throw new KeyNotFoundException("Objective not found.");
+        //    }
+
+        //    existingObjective.ObjectiveDescription = objective.ObjectiveDescription;
+        //    existingObjective.ObjectiveTypeId = objective.ObjectiveTypeId;
+
+        //    _dbContext.Objectives.Update(existingObjective);
+        //    await _dbContext.SaveChangesAsync();
+        //}
+
+
+        // Add this method inside ObjectiveService.cs
+        public async Task AddObjective(Objective objective)
+        {
+            if (objective == null)
+            {
+                throw new ArgumentException("Objective cannot be null.");
+            }
+
+            _dbContext.Objectives.Add(objective);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateObjectiveAsync(Objective objective)
+        {
+            _dbContext.Objectives.Update(objective);
+            await _dbContext.SaveChangesAsync();            
+        }
+        
+
+        //Add Objective Type
         public async Task AddObjectiveType(ObjectiveType objectiveType)
         {
             if (objectiveType == null || string.IsNullOrWhiteSpace(objectiveType.ObjectiveTypeName))
@@ -34,7 +76,6 @@ namespace SPMIS_Web.Data.DataAccessLayer
         {
             return await _dbContext.ObjectiveTypes.ToListAsync();
         }
-
         //Edit the same page
         public async Task<bool> UpdateObjectiveType(Guid id, string newName)
         {
@@ -49,17 +90,7 @@ namespace SPMIS_Web.Data.DataAccessLayer
             return true;
         }
 
-        // Add this method inside ObjectiveService.cs
-        public async Task AddObjective(Objective objective)
-        {
-            if (objective == null)
-            {
-                throw new ArgumentException("Objective cannot be null.");
-            }
-
-            _dbContext.Objectives.Add(objective);
-            await _dbContext.SaveChangesAsync();
-        }
+        
 
         public async Task<Objective?> GetObjectiveByIdAsync(Guid objectiveId)
         {
