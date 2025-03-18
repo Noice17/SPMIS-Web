@@ -87,7 +87,7 @@ namespace SPMIS_Web.Controllers
             _context.StrategyMaps.Add(model);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("StrategicMap");
         }
 
         [HttpGet]
