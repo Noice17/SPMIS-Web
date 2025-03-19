@@ -203,10 +203,10 @@
             let iconClass = "fas fa-tag";
             let colorClass = "text-green-600 dark:text-green-400";
 
-            if (category === "Core") {
+            if (category === "Core Strategy") {
                 iconClass = "fas fa-bullseye";
                 colorClass = "text-blue-600 dark:text-blue-400";
-            } else if (category === "Support") {
+            } else if (category === "Support Strategy") {
                 iconClass = "fas fa-cogs";
                 colorClass = "text-purple-600 dark:text-purple-400";
             }

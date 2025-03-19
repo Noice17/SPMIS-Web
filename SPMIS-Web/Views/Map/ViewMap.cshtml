@@ -184,9 +184,11 @@
 
                         <!-- Status Bar - Color based on type -->
                         <div class="w-full h-1.5
-                     @(objective.Type?.ObjectiveTypeName == "Core" ? "bg-blue-500 dark:bg-blue-600" :
-                       (objective.Type?.ObjectiveTypeName == "Support" ? "bg-purple-500 dark:bg-purple-600" :
-                       "bg-green-500 dark:bg-green-600"))">
+                         @(objective.Type?.ObjectiveTypeName == "Core Strategy" ? "bg-blue-500 dark:bg-blue-600" :
+                          (objective.Type?.ObjectiveTypeName == "Support Strategy" ? "bg-gray-500 dark:bg-gray-600" :
+                          (objective.Type?.ObjectiveTypeName == "Outcomes" ? "bg-yellow-500 dark:bg-yellow-600" :
+                          (objective.Type?.ObjectiveTypeName == "Social Impact" ? "bg-red-500 dark:bg-red-600" :
+                          "bg-green-500 dark:bg-green-600"))))">
                         </div>
 
                         <!-- Objective Content -->
@@ -197,7 +199,7 @@
                                 <!-- Additional info -->
                                 <div class="flex items-center text-sm mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                                     <i class="fas fa-tag mr-2 text-gray-500 dark:text-gray-400"></i>
-                                    <span class="text-gray-600 dark:text-gray-300">@(objective.Type != null ? objective.Type.ObjectiveTypeName : "N/A") Strategy</span>
+                                    <span class="text-gray-600 dark:text-gray-300">@(objective.Type != null ? objective.Type.ObjectiveTypeName : "N/A")</span>
                                 </div>
                             </div>
                         </div>
