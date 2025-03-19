@@ -1,4 +1,4 @@
-﻿    document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
     // Modal functionality
     const modal = document.getElementById('createMapModal');
     const openModalBtn = document.getElementById('openCreateMapModal');
