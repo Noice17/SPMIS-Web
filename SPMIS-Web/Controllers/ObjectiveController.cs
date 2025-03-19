@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SPMIS_Web.Models.Entities;
 using SPMIS_Web.Models.ViewModels;
-using SPMIS_Web.Data.DataAccessLayer; // Corrected namespace for ObjectiveService
+using SPMIS_Web.Data.DataAccessLayer;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SPMIS_Web.Controllers
 {
@@ -26,80 +28,57 @@ namespace SPMIS_Web.Controllers
         [HttpGet]
         public async Task<IActionResult> AddObjective(Guid mapId)
         {
+            var objectiveTypes = await _objectiveService.GetObjectiveTypes();
+
             var model = new AddObjectiveViewModel
             {
                 MapId = mapId,
-                ObjectiveType = await _objectiveService.GetObjectiveTypes() // Fetch ObjectiveType from DB
+                ObjectiveType = objectiveTypes.Select(o => new ObjectiveType
+                {
+                    ObjectiveTypeId = o.ObjectiveTypeId,
+                    ObjectiveTypeName = o.ObjectiveTypeName
+                }).ToList()
             };
 
-            return View("AddObjective", model); //Load as partial view
+            return PartialView("AddObjective", model); //Load as partial view
         }
 
         // POST: Add Objective
         [HttpPost]
-        public async Task<IActionResult> AddObjective(AddObjectiveViewModel model)
+        public async Task<IActionResult> AddObjective([FromBody] AddObjectiveViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                model.ObjectiveType = await _objectiveService.GetObjectiveTypes(); // Reload dropdown data
-                return View(model);
+                return BadRequest(new { message = "Invalid input data." });
             }
 
             var newObjective = new Objective
             {
                 ObjectiveDescription = model.ObjectiveDescription,
-                ObjectiveTypeId = model.ObjectTypeId, // Assign selected ObjectTypeId
+                ObjectiveTypeId = model.ObjectTypeId,
                 MapId = model.MapId
             };
 
             await _objectiveService.AddObjective(newObjective);
-            return RedirectToAction("AddObjective", "Objective");
+
+            return Json(new { success = true, message = "Objective added successfully!" });
+            //return RedirectToAction("_AddObjective", "Map");
         }
 
-        // GET: Load Add Objective Type form
+
+        // GET: Retrieve Objective Types for JSON response
         [HttpGet]
-        public IActionResult AddObjectiveType()
+        public async Task<IActionResult> GetObjectiveTypes()
         {
-            return View();
-        }
+            var types = await _objectiveService.GetObjectiveTypes();
 
-        // POST: Add Objective Type
-        [HttpPost]
-        public async Task<IActionResult> AddObjectiveType(ObjectiveType objectiveType)
-        {
-            if (!ModelState.IsValid)
+            var result = types.Select(t => new  
             {
-                return View(objectiveType);
-            }
+                t.ObjectiveTypeId,
+                t.ObjectiveTypeName
+            }).ToList();
 
-            await _objectiveService.AddObjectiveType(objectiveType);
-            return RedirectToAction("AddObjectiveType", "Objective");
-        }
-
-        // GET: Retrieve list of Objective Type
-        [HttpGet]
-        public async Task<IActionResult> ObjectiveTypeList()
-        {
-            var objectiveType = await _objectiveService.GetObjectiveTypes();
-            return View(objectiveType);
-        }
-
-        // POST: Edit Objective Type
-        [HttpPost]
-        public async Task<IActionResult> EditObjectiveType([FromBody] ObjectiveType model)
-        {
-            if (model == null || model.ObjectiveTypeId == Guid.Empty || string.IsNullOrWhiteSpace(model.ObjectiveTypeName))
-            {
-                return BadRequest(new { message = "Invalid data." });
-            }
-
-            var success = await _objectiveService.UpdateObjectiveType(model.ObjectiveTypeId, model.ObjectiveTypeName);
-            if (!success)
-            {
-                return StatusCode(500, new { message = "Error updating Objective Type." });
-            }
-
-            return Json(new { message = "Objective Type updated successfully!" });
+            return Json(result);
         }
     }
 }

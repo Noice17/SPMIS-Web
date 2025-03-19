@@ -1,31 +1,68 @@
 ﻿@model SPMIS_Web.Models.ViewModels.AddObjectiveViewModel
 
-<div class="flex justify-center items-center max-h-screen bg-blue-50 border relative">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <div class="bg-white p-6 rounded-lg shadow-md border w-96 ">
-        <!-- Header -->
-        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Add Objectives</h1>
-        <!-- Form -->
-        <form id="objectiveForm" method="post">
-            <input type="hidden" name="mapId" value="@Model.MapId" />
-            <div class="mb-4">
-                <label for="objectiveDescription" class="block font-semibold">Objective Description</label>
-                <input type="text" id="objectiveDescription" name="ObjectiveDescription" class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
-            </div>
-            <div class="mb-4">
-                <label for="objectType" class="block font-semibold">Object Type</label>
-                <select id="objectType" name="ObjectTypeId" class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
-                    <option value="" disabled selected>Select an Object Type</option>
-                    @foreach (var type in Model.ObjectiveType)
-                    {
-                        <option value="@type.ObjectiveTypeId">@type.ObjectiveTypeName</option>
-                    }
-                </select>
-            </div>
-            <div class="flex justify-center">
-                <button type="submit" class="px-6 py-2 bg-teal-400 text-white font-semibold rounded-full shadow-md hover:bg-teal-500">Submit</button>
-            </div>
-        </form>
-        <div id="formMessage" class="mt-4 text-center hidden"></div>
+<form id="addObjectiveForm" method="post" asp-controller="Objective" asp-action="AddObjective">
+    <input type="hidden" name="MapId" value="@Model.MapId" />
+
+    <div class="mb-4">
+        <label for="objectiveDescription" class="block font-semibold">Objective Description</label>
+        <input type="text" id="objectiveDescription" name="ObjectiveDescription" class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
     </div>
-</div>
+
+    <div class="mb-4">
+        <label for="objectType" class="block font-semibold">Object Type</label>
+        <select id="objectType" name="ObjectTypeId" class="mt-1 p-2 w-full bg-gray-100 border-none rounded-full focus:ring focus:ring-blue-300" required>
+            <option value="" disabled selected>Select an Object Type</option>
+            @if (Model.ObjectiveType != null && Model.ObjectiveType.Any())
+            {
+                @foreach (var type in Model.ObjectiveType)
+                {
+                    <option value="@type.ObjectiveTypeId">@type.ObjectiveTypeName</option>
+                }
+            }
+            else
+            {
+                <option value="" disabled>No Data Available</option>
+            }
+        </select>
+    </div>
+
+    <div class="flex justify-center">
+        <button type="submit" class="px-6 py-2 bg-teal-400 text-white font-semibold rounded-full shadow-md hover:bg-teal-500">Submit</button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $("#addObjectiveContainer").on("submit", "form", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = $(this);
+            var url = form.attr("action");
+
+            $.ajax({
+                type: "POST",   
+                url: url,
+                data: JSON.stringify(form.serializeArray().reduce((acc, item) => {
+                    acc[item.name] = item.value;
+                    return acc;
+                }, {})),
+                contentType: "application/json",
+                success: function (response) {
+                    if (response.success) {
+                        closeModal(); // Close the modal
+                        location.reload(); // Reload the page to reflect changes (Optional: Use AJAX instead)
+                    }
+                },
+                error: function (xhr) {
+                    alert("Error: " + xhr.responseText);
+                }
+            });
+        });
+
+        window.closeModal = function () {
+            $("#addObjectiveModal").addClass("hidden").removeClass("flex");
+        };
+    });
+</script>
