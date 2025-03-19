@@ -32,5 +32,6 @@ namespace SPMIS_Web.Models.Entities
         }
         public List<ObjectiveType> ObjectiveType { get; set; } = new List<ObjectiveType>();
 
-        public List<Objective> Objective { get; set; } = new List<Objective>();    }
+        public List<Objective> Objective { get; set; } = new List<Objective>();    
+    }
 }

@@ -1,5 +1,5 @@
-﻿@{
-    ViewData["Title"] = "Strategic Map";
+﻿﻿@{
+    ViewData["Title"] = "Strategic Map | DICT";
 }
 
 @model IEnumerable<SPMIS_Web.Models.Entities.StrategyMap>
@@ -10,107 +10,253 @@
 
 <div class="mt-4"></div> <!-- Added space at the top -->
 
-<div class="bg-blue-100 dark:bg-gray-900 px-4 py-2 shadow-md border relative transition-colors duration-200">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="mb-8 flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Strategic Maps</h1>
-            <div class="flex items-center space-x-4">
-                <!-- Search Input with Icon -->
-                <div class="relative">
-                    <input type="text" id="search-maps" placeholder="Search Strategy Maps..."
-                           class="w-full sm:w-64 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <i class="fas fa-search absolute right-3 top-3 text-gray-400 dark:text-gray-300"></i>
+
+<header class="relative bg-blue-700 text-white py-6 shadow-lg overflow-hidden flex flex-col items-center justify-center text-center">
+    <!-- DICT Logo
+    <div class="mb-4">
+        <img src="~/logo.png" alt="DICT Logo" class="w-14 h-14 rounded-full">
+        <p class="text-lg md:text-xl opacity-90 drop-shadow-md mb-1">Department of Information and Communications Technology</p>
+    </div> -->
+    <!-- Main Title and Subtitle -->
+    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight drop-shadow-lg mb-2">Strategic Maps</h2>
+    <p class="text-sm opacity-75 max-w-lg mx-auto drop-shadow-md">Charting the future of Philippine digital infrastructure</p>
+
+    <!-- Yellow Stars
+    <div class="absolute top-8 left-10 text-yellow-400 text-4xl animate-pulse">★</div>
+    <div class="absolute top-16 left-36 text-yellow-400 text-3xl animate-pulse delay-150">★</div>
+    <div class="absolute bottom-8 left-28 text-yellow-400 text-5xl animate-pulse delay-300">★</div>
+    -->
+</header>
+
+<!-- Quick Stats Bar -->
+<div class="bg-white dark:bg-gray-900 shadow-md border-b border-gray-200 dark:border-gray-800">
+    <div class="container mx-auto">
+        <div class="flex flex-wrap justify-center md:justify-between">
+            <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
+                <i class="fas fa-map text-blue-600 dark:text-blue-400 text-2xl"></i>
+                <div>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count() ?? 0)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Maps</p>
                 </div>
-
-                <!-- Filter Dropdown -->
-                <select id="filter-maps"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="all">All Maps</option>
-                    <option value="active">Active</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="completed">Completed</option>
-                </select>
-
-                <!-- Create New Map Button -->
-                <button id="openCreateMapModal"
-                        class="flex items-center bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-                    <i class="fas fa-plus mr-2"></i> Create New Map
-                </button>
-
-                <!-- Dark Mode Toggle -->
-                <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                    <i class="fas fa-moon text-gray-800 dark:text-gray-200"></i>
-                </button>
             </div>
-        </header>
+            <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
+                <i class="fas fa-play-circle text-green-600 dark:text-green-400 text-2xl"></i>
+                <div>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.MapEnd >= DateTime.Now && m.MapStart <= DateTime.Now) ?? 0)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
+                <i class="fas fa-hourglass-start text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                <div>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.MapStart > DateTime.Now) ?? 0)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Upcoming</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 px-6 py-4">
+                <i class="fas fa-check-circle text-gray-600 dark:text-gray-400 text-2xl"></i>
+                <div>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.MapEnd < DateTime.Now) ?? 0)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Completed</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Strategy Map List -->
-<div class="strategy-map-list-container container mx-auto px-4 py-8">
-    <div id="mapList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var map in Model)
+<!-- Main Navigation Bar -->
+<div class="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-30">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center justify-between py-4">
+            <!-- Left Side - Search & Filter -->
+            <div class="flex items-center flex-grow max-w-md mb-4 md:mb-0">
+                <div class="w-full relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="search-maps" placeholder="Find strategic maps..."
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Right Side - Actions -->
+            <div class="flex items-center space-x-3">
+                <div class="relative">
+                    <select id="filter-maps"
+                            class="appearance-none pl-4 pr-10 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-full text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">All Maps</option>
+                        <option value="active">Active</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </div>
+                </div>
+
+                <button id="openCreateMapModal"
+                        class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-full transition-colors duration-200">
+                    <i class="fas fa-plus mr-2"></i> New Map
+                </button>
+
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Section Header -->
+        <div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white" id="mapList">Strategic Maps</h2>
+            </div>
+        </div>
+
+        <!-- Strategy Map Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @if (Model != null && Model.Any())
             {
-                <div class="map-card bg-white dark:bg-gray-800 rounded-lg shadow-md transition transform hover:scale-105 p-4 flex flex-col justify-between"
-                     data-status="@(map.MapEnd < DateTime.Now ? "completed" : (map.MapStart > DateTime.Now ? "upcoming" : "active"))">
+                @foreach (var map in Model)
+                {
+                    <div class="map-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition transform hover:shadow-lg hover:translate-y-px"
+                         data-status="@(map.MapEnd < DateTime.Now ? "completed" : (map.MapStart > DateTime.Now ? "upcoming" : "active"))">
 
-                    <div>
-                        <!-- Wrap the title, description, and date in a div -->
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">@map.MapTitle</h3>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">@map.MapDescription</p>
-                        <p class="text-gray-500 dark:text-gray-300 text-xs">@map.MapStart.ToString("yyyy") - @map.MapEnd.ToString("yyyy")</p>
+                        <!-- Status Bar -->
+                        <div class="w-full h-1.5
+                             @(map.MapEnd < DateTime.Now ? "bg-gray-400 dark:bg-gray-600" :
+                               (map.MapStart > DateTime.Now ? "bg-yellow-500 dark:bg-yellow-600" :
+                               "bg-green-500 dark:bg-green-600"))">
+                        </div>
+
+                        <!-- Map Content -->
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">@map.MapTitle</h3>
+
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">@map.MapDescription</p>
+
+                            <!-- Timeline & Status Info -->
+                            <div class="flex items-center justify-between text-sm mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                                <div class="flex items-center">
+                                    <i class="far fa-calendar mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <span class="text-gray-600 dark:text-gray-300">@map.MapStart.ToString("yyyy") - @map.MapEnd.ToString("yyyy")</span>
+                                </div>
+
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    @(map.MapEnd < DateTime.Now ? "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300" :
+                                      (map.MapStart > DateTime.Now ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200" :
+                                      "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200"))">
+                                    @(map.MapEnd < DateTime.Now ? "Completed" : (map.MapStart > DateTime.Now ? "Upcoming" : "Active"))
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Action Footer -->
+                        <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
+                            <a asp-action="ViewMap" asp-route-id="@map.MapId" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium text-sm flex items-center justify-between w-full">
+                                <span>View Map Details</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
                     </div>
-
-                    <div class="mt-3 flex justify-between items-center">
-                        <span class="inline-block px-2 py-1 text-xs rounded-full
-                            @(map.MapEnd < DateTime.Now ? "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300" :
-                              (map.MapStart > DateTime.Now ? "bg-yellow-200 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-200" :
-                              "bg-green-200 text-green-700 dark:bg-green-700 dark:text-green-200"))">
-                            @(map.MapEnd < DateTime.Now ? "Completed" : (map.MapStart > DateTime.Now ? "Upcoming" : "Active"))
-                        </span>
-
-                        <a asp-action="ViewMap" asp-route-id="@map.MapId" class="text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
-                            View Details
-                        </a>
+                }
+            }
+            else
+            {
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 text-center">
+                    <div class="w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-6">
+                        <i class="fas fa-project-diagram text-blue-600 dark:text-blue-400 text-4xl"></i>
                     </div>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Strategic Maps Available</h3>
+                    <p class="text-gray-600 dark:text-gray-400 max-w-md mb-6">
+                        Get started by creating your first strategic map to outline your department's objectives and initiatives.
+                    </p>
+                    <button id="openCreateMapModalEmpty" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Create Your First Map
+                    </button>
                 </div>
             }
-        }
-        else
-        {
-            <div class="col-span-3 text-center py-8 text-gray-600 dark:text-gray-300">
-                <i class="fas fa-map-marked-alt text-4xl mb-4"></i>
-                <p class="text-xl">No strategy maps found.</p>
-                <p class="mt-2">Click "Create New Map" to get started.</p>
+        </div>
+
+        <!-- No Results Message (Initially Hidden) -->
+        <div id="noResults" class="hidden flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 text-center mt-8">
+            <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-6">
+                <i class="fas fa-search text-gray-500 dark:text-gray-400 text-3xl"></i>
             </div>
-        }
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Matching Results</h3>
+            <p class="text-gray-600 dark:text-gray-400 max-w-md mb-6">
+                We couldn't find any strategic maps that match your search criteria. Try adjusting your filters or search terms.
+            </p>
+            <button id="resetSearch" class="inline-flex items-center px-5 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                <i class="fas fa-redo mr-2"></i> Reset Filters
+            </button>
+        </div>
+
+        <!-- Pagination Section -->
+        <div class="mt-6 flex justify-center">
+            <nav class="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="sr-only">Previous</span>
+                    <i class="fas fa-chevron-left text-xs"></i>
+                </a>
+                <a href="#" aria-current="page" class="z-10 bg-blue-50 dark:bg-blue-900 border-blue-500 dark:border-blue-700 text-blue-600 dark:text-blue-200 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    1
+                </a>
+                <a href="#" class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    2
+                </a>
+                <a href="#" class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    3
+                </a>
+                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="sr-only">Next</span>
+                    <i class="fas fa-chevron-right text-xs"></i>
+                </a>
+            </nav>
+        </div>
     </div>
 </div>
 
+<footer class="bg-blue-700 text-white py-10">
+    <!-- Copyright Section -->
+    <div class="mt-8 pt-6 border-t border-blue-600 text-center text-blue-100 text-xs">
+        <p>&copy; @DateTime.Now.Year Republic of the Philippines. Department of Information and Communications Technology. All Rights Reserved.</p>
+        <div class="mt-2 flex justify-center space-x-4">
+            <a href="#" class="hover:text-white">Privacy Policy</a>
+            <a href="#" class="hover:text-white">Terms of Service</a>
+            <a href="#" class="hover:text-white">Accessibility</a>
+        </div>
+    </div>
+</footer>
 
 
-        <!-- No Results Message (Initially Hidden) -->
-        <div id="noResults" class="hidden text-center py-8 text-gray-600 dark:text-gray-300">
-            <i class="fas fa-search text-4xl mb-4"></i>
-            <p class="text-xl">No matching strategy maps found.</p>
-            <p class="mt-2">Try adjusting your search or filters.</p>
+<!-- Modal Container -->
+<div id="createMapModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+    <div id="modalContent" class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md relative">
+        <!-- Modal Header -->
+        <div class="relative bg-blue-600 text-white rounded-t-xl p-4">
+            <h3 class="text-xl font-bold">Create New Strategic Map</h3>
+            <p class="text-blue-100 text-sm mt-1">Define your department's next strategic initiative</p>
+            <button id="closeModal" class="absolute top-3 right-3 text-white hover:text-blue-200 focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
 
-
-    <!-- Modal Container -->
-    <div id="createMapModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-        <div id="modalContent" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md mx-4 relative">
-        <button id="closeModal" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white text-3xl font-bold">
-            &times;
-        </button>
-            <div id="modalBody">
-                <!-- Form will be loaded here dynamically -->
-                <div class="flex justify-center items-center py-8">
-                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div id="modalBody" class="p-6">
+            <!-- Form will be loaded here dynamically -->
+            <div class="flex justify-center items-center py-10">
+                <div class="relative">
+                    <div class="h-16 w-16 rounded-full border-t-4 border-b-4 border-blue-500 animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="h-10 w-10 rounded-full bg-white dark:bg-gray-800"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
