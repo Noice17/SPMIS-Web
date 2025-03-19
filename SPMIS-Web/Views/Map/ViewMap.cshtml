@@ -1,4 +1,5 @@
-﻿@model SPMIS_Web.Models.Entities.StrategyMap
+﻿@model SPMIS_Web.Models.ViewModels.AddObjectiveTypeViewModel
+
 @{
     ViewData["Title"] = "View Strategy Map | DICT";
 }
@@ -7,6 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" loading="lazy">
 <script src="~/js/ViewMap.js" defer></script>
+
 
 <style>
     .dict-primary {
@@ -35,6 +37,7 @@
     }
 </style>
 
+
 <div class="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-30">
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap items-center justify-between py-4">
@@ -47,85 +50,33 @@
 
             <!-- Right Side - Actions -->
             <div class="flex items-center space-x-3">
-                <button id="editMapBtn" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+                <!-- Edit Map Button -->
+                <button id="openUpdateMapModalBtn" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
                     <i class="fas fa-edit mr-2"></i> Edit Map
                 </button>
 
-                <a asp-controller="Objective" asp-action="AddObjective" asp-route-MapId="@Model.MapId"
-                   class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
-                    <i class="fas fa-plus mr-2"></i> Add Objective
-                </a>
+                <!-- Add Objective Button -->
+                <button id="AddObjectiveModalBtn" class="bg-blue-900 hover:bg-yellow-500 text-white flex items-center px-4 py-2 rounded-md font-medium shadow-sm transition duration-200">
+                    <i class="fas fa-plus mr-2"></i>Add Objective
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-10 shadow-lg relative overflow-hidden">
-    <div class="container mx-auto max-w-6xl px-6 flex flex-col items-center text-center md:text-left md:flex-row md:justify-between gap-6">
-        <!-- Title and Description Section -->
-        <div class="relative z-10 max-w-2xl">
-            <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3 leading-tight">@Model.MapTitle</h1>
-            <p class="text-base md:text-lg font-medium opacity-90">Strategic Period: @Model.MapStart.Year - @Model.MapEnd.Year</p>
-            @if (!string.IsNullOrEmpty(Model.MapDescription))
-            {
-                <p class="text-sm md:text-base mt-3 text-blue-100 leading-relaxed">@Model.MapDescription</p>
-            }
-        </div>
+<!-- Header -->
+<header class="w-full mb-6 bg-gradient-to-r from-blue-300 to-blue-400 text-white p-6 shadow-lg relative overflow-hidden rounded flex flex-col items-center justify-center">
+    <div class="relative z-10 text-center">
+        <h1 class="text-4xl font-bold mb-4">@Model.MapTitle</h1>
+        <p class="text-xl font-medium mb-2">Strategic Period: @Model.MapStart.Year - @Model.MapEnd.Year</p>
+        <p class="text-lg mt-2 text-gray-100">@Model.MapDescription</p>
     </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-800 to-blue-900 opacity-40 rounded"></div>
+</header>
 
     <!-- Background Overlay -->
     <div class="absolute inset-0 bg-blue-900 opacity-30"></div>
 </div>
-
-
-<!-- Quick Stats Bar -->
-<div class="bg-white dark:bg-gray-900 shadow-md border-b border-gray-200 dark:border-gray-800">
-    <div class="container mx-auto max-w-6xl mb-4">
-        <div class="flex flex-wrap justify-center items-center text-center gap-20">
-
-
-            <!-- Total Objectives -->
-            <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
-                <i class="fas fa-tasks text-blue-600 dark:text-blue-400 text-2xl"></i>
-                <div>
-                    <p class="text-xl font-bold text-gray-800 dark:text-white">
-                        @(Model.Objective?.Count() ?? 0)
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Objectives</p>
-                </div>
-            </div>
-
-            @if (Model.Objective != null && Model.Objective.Any())
-            {
-                <!-- Core Objectives -->
-                <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
-                    <i class="fas fa-bullseye text-blue-600 dark:text-blue-400 text-2xl"></i>
-                    <div>
-                        <p class="text-xl font-bold text-gray-800 dark:text-white">
-                            @(Model.Objective.Where(o => o.Type?.ObjectiveTypeName?.Equals("Core", StringComparison.OrdinalIgnoreCase) ?? false).Count())
-                        </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Core</p>
-                    </div>
-                </div>
-
-                <!-- Support Objectives -->
-                <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
-                    <i class="fas fa-cogs text-purple-600 dark:text-purple-400 text-2xl"></i>
-                    <div>
-                        <p class="text-xl font-bold text-gray-800 dark:text-white">
-                            @(Model.Objective.Where(o => o.Type?.ObjectiveTypeName?.Equals("Supports", StringComparison.OrdinalIgnoreCase) ?? false).Count())
-                        </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Support</p>
-                    </div>
-                </div>
-
-                <!-- Additional objective types can be added dynamically via JavaScript -->
-                <div id="additional-category-stats" class="flex flex-wrap"></div>
-            }
-        </div>
-    </div>
-</div>
-
 
 <!-- Main Content -->
 <div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -200,8 +151,9 @@
 
                         <!-- Action Footer -->
                         <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex justify-between mt-auto">
-                            <button class="openUpdateObjectiveBtn text-blue-600 hover:text-blue-800" aria-label="Edit Objective" title="Edit Objective">
-                                <i class="fas fa-edit"></i> Edit
+                            <button class="openUpdateObjectiveBtn text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2"
+                                    data-objectiveid="@objective.ObjectiveId">
+                                <i class="fas fa-edit"></i>Edit
                             </button>
                             <button class="assign-btn text-yellow-600 hover:text-yellow-800" aria-label="Assign Objective" title="Assign Objective">
                                 <i class="fas fa-user-plus"></i> Assign
@@ -260,48 +212,122 @@
     </div>
 </footer>
 
-<!-- Edit Map Modal -->
-<div id="editMapModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+
+<!-- Update Map Modal-->
+<div id="updateMapModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold text-gray-900">Edit Strategy Map</h3>
-            <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <form id="editMapForm" asp-controller="Map" asp-action="EditMap" method="post">
-            <input type="hidden" name="MapId" value="@Model.MapId" />
 
-            <div class="mb-4">
-                <label for="MapTitle" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                <input type="text" id="MapTitle" name="MapTitle" value="@Model.MapTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required maxlength="100" />
-                <span class="text-xs text-gray-500">Maximum 100 characters</span>
-            </div>
-
-            <div class="mb-4">
-                <label for="MapDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea id="MapDescription" name="MapDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">@Model.MapDescription</textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label for="MapStart" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                    <input type="date" id="MapStart" name="MapStart" value="@Model.MapStart.ToString("yyyy-MM-dd")" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                </div>
-                <div>
-                    <label for="MapEnd" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                    <input type="date" id="MapEnd" name="MapEnd" value="@Model.MapEnd.ToString("yyyy-MM-dd")" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-3 mt-6">
-                <button type="button" id="cancelEditBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition duration-200">
-                    Cancel
-                </button>
-                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
-                    Save Changes
-                </button>
-            </div>
-        </form>
+        <div id="updateMapContainer"></div>
     </div>
 </div>
+
+<!-- Add Objective Modal -->
+<div id="addObjectiveModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Add Objective</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="addObjectiveContainer"></div>
+    </div>
+</div>
+
+<!-- Update Objective Modal-->
+<div id="updateObjectiveModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Update Objective</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div id="updateObjectiveContainer"></div>
+    </div>
+</div>
+
+
+
+
+<!-- JavaScript to Open & Close Modal -->
+<!-- EDITED: BEFORE: /Map/AddObjectivePartial -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById("addObjectiveModal");
+        const openBtn = document.getElementById("AddObjectiveModalBtn");
+
+        openBtn.addEventListener("click", function () {
+            console.log("Opening Modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+            // Load the AddObjectivePartial dynamically with correct mapId
+            
+            $("#addObjectiveContainer").load(`/Objective/AddObjective?mapId=@Model.MapId`);
+        });
+
+        window.closeModal = function () {
+            console.log("Closing Modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        };
+    });
+</script>
+<!--Update Map-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById("updateMapModal");
+        const openBtn = document.getElementById("openUpdateMapModalBtn");
+
+        openBtn.addEventListener("click", function () {
+            console.log("Opening Modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+
+
+            $("#updateMapContainer").load(`/Map/UpdateMap?mapId=@Model.MapId`);
+        });
+
+        window.closeModal = function () {
+            console.log("Closing Modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        };
+    });
+</script>
+
+<!--Update Objective-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById("updateObjectiveModal");
+        const updateContainer = document.getElementById("updateObjectiveContainer");
+
+        // Event delegation for dynamically loaded elements
+        document.addEventListener("click", function (event) {
+            if (event.target.closest(".openUpdateObjectiveBtn")) {
+                let objectiveId = event.target.closest(".openUpdateObjectiveBtn").getAttribute("data-objectiveid");
+                console.log("Opening Modal for Objective ID:", objectiveId);
+
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+
+                // Load the UpdateObjectivePartial dynamically with the correct objectiveId
+                $("#updateObjectiveContainer").load(`/Objective/UpdateObjective?objectiveId=${objectiveId}`);
+            }
+        });
+
+        window.closeModal = function () {
+            console.log("Closing Modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        };
+    });
+</script>

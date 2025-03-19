@@ -1,0 +1,13 @@
+﻿@model SPMIS_Web.Models.Entities.ObjectiveType;
+
+<h1 class="text-xl font-semibold">Add Objective Type</h1>
+
+<form method="post" class="mt-4">
+    <div class="mb-4">
+        <label class="block text-gray-700 font-medium">Objective Type</label>
+        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" asp-for="ObjectiveTypeName" required />
+    </div>
+    <div class="mb-4">
+        <input class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer" type="submit" value="Submit" />
+    </div>
+</form>

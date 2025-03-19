@@ -7,7 +7,7 @@
             <h1 class="text-2xl font-semibold text-gray-700 text-center">Objective Types</h1>
 
             <a class="px-4 py-2 border border-gray-700 text-gray-700 rounded hover:bg-gray-700 hover:text-white transition"
-               asp-controller="Objective" asp-action="AddObjectiveType">
+               asp-controller="ObjectiveType" asp-action="Add">
                 Add Objective Type
             </a>
         </div>
@@ -29,8 +29,8 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  @if (Model != null && Model.Any())
-                  {
+                    @if (Model != null && Model.Any())
+                    {
                         int count = 1;
                         @foreach (var objectiveType in Model)
                         {
@@ -97,7 +97,7 @@
         id = encodeURIComponent(id);
         let newName = document.getElementById("nameInput_" + id).value.trim();
 
-        fetch('/Objective/EditObjectiveType', {
+        fetch('/ObjectiveType/Edit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

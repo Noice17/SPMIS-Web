@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SPMIS_Web.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SPMIS_Web.Data;
+using SPMIS_Web.Models.Entities;
+using SPMIS_Web.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SPMIS_Web.Controllers
 {
@@ -17,17 +20,26 @@ namespace SPMIS_Web.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    ViewData["ActivePage"] = "Index"; // Highlight Strategy Map
+
+        //    var maps = _context.StrategyMaps
+        //        .OrderByDescending(m => m.MapStart)
+        //        .ToList();
+
+        //    return View(maps);
+        //}
 
         [HttpGet]
         public IActionResult StrategicMap()
         {
             ViewData["ActivePage"] = "StrategyMap"; // Highlight Strategy Map
 
-            var maps = _context.StrategyMaps.OrderByDescending(m => m.MapStart).ToList();
+            var maps = _context.StrategyMaps
+                .OrderByDescending(m => m.MapStart)
+                .ToList();
+
             return View(maps);
         }
 
@@ -41,46 +53,103 @@ namespace SPMIS_Web.Controllers
 
             if (map == null)
             {
-                return NotFound(); // Handle case when map is not found
+                return NotFound();
             }
 
-            return View(map);
+            // Ensure we pass the correct ViewModel
+            var viewModel = new AddObjectiveTypeViewModel
+            {
+                MapId = map.MapId,
+                MapTitle = map.MapTitle,
+                MapDescription = map.MapDescription,
+                MapStart = map.MapStart,
+                MapEnd = map.MapEnd,
+                Objective = map.Objective?.ToList() ?? new List<Objective>()
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
         public IActionResult CreateMap()
         {
-            return PartialView("CreateMap"); // Use a Partial View
+            return PartialView("CreateMap"); // Load as Partial View
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMap(StrategyMap model)
         {
-            // Check if this would be an active map
-            bool wouldBeActive = model.MapStart <= DateTime.Now && model.MapEnd > DateTime.Now;
-
-            if (wouldBeActive)
+            if (!ModelState.IsValid)
             {
-                // Check if there's already an active map
-                bool existingActiveMap = await _context.StrategyMaps.AnyAsync(m =>
-                    m.MapStart <= DateTime.Now &&
-                    m.MapEnd > DateTime.Now);
+                return View(model);
+            }
 
-                if (existingActiveMap)
+            model.MapId = Guid.NewGuid();
+            _context.StrategyMaps.Add(model);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("StrategicMap");
+        }
+
+        [HttpGet]
+        public IActionResult MapList(int page = 1)
+        {
+            int pageSize = 10;
+            var query = _context.StrategyMaps.OrderByDescending(m => m.MapStart);
+            var count = query.Count();
+            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (count + pageSize - 1) / pageSize;
+
+            return View(items);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateMap(Guid mapId)
+        {
+            var map = await _context.StrategyMaps
+                .Where(m => m.MapId == mapId)
+                .Select(m => new StrategyMap
                 {
-                    ModelState.AddModelError("", "Only one active strategy map is allowed. Please adjust the dates.");
-                    return PartialView("CreateMap", model);
-                }
+                    MapId = m.MapId,
+                    MapTitle = m.MapTitle,
+                    MapDescription = m.MapDescription,
+                    MapStart = m.MapStart,
+                    MapEnd = m.MapEnd
+                }).FirstOrDefaultAsync();
+
+            if (map == null)
+            {
+                return NotFound();
             }
 
-            if (ModelState.IsValid)
+            return PartialView("UpdateMap", map);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateMap(StrategyMap model)
+        {
+            if (!ModelState.IsValid)
             {
-                model.MapId = Guid.NewGuid();
-                _context.StrategyMaps.Add(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("StrategicMap");
+                return BadRequest(ModelState);
             }
-            return PartialView("CreateMap", model);
+
+            var map = await _context.StrategyMaps.FindAsync(model.MapId);
+            if (map == null)
+            {
+                return NotFound();
+            }
+
+            map.MapTitle = model.MapTitle;
+            map.MapDescription = model.MapDescription;
+            map.MapStart = model.MapStart;
+            map.MapEnd = model.MapEnd;
+
+            _context.StrategyMaps.Update(map);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
         }
 
         [HttpPost]
@@ -145,24 +214,25 @@ namespace SPMIS_Web.Controllers
             return RedirectToAction("ViewMap", new { id = strategyMap.MapId });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CheckActiveMapExists(Guid? excludeId = null)
-        {
-            IQueryable<StrategyMap> query = _context.StrategyMaps.Where(m =>
-                m.MapStart <= DateTime.Now &&
-                m.MapEnd > DateTime.Now);
 
-            // If we're editing an existing map, exclude it from the check
-            if (excludeId.HasValue)
-            {
-                query = query.Where(m => m.MapId != excludeId.Value);
-            }
 
-            bool existingActiveMap = await query.AnyAsync();
+        // ---- DO NOT USE: Function is moved to AddObjective in the Objective Controller  ---
+        //[HttpGet]
+        //public IActionResult AddObjectivePartial(Guid MapId)
+        //{
+        //    var viewModel = new AddObjectiveTypeViewModel
+        //    {
+        //        MapId = MapId,
+        //        ObjectiveType = _context.ObjectiveTypes
+        //            .Select(o => new ObjectiveType
+        //            {
+        //                ObjectiveTypeId = o.ObjectiveTypeId,
+        //                ObjectiveTypeName = o.ObjectiveTypeName
+        //            }).ToList()
+        //    };
 
-            return Json(new { exists = existingActiveMap });
-        }
+        //    return PartialView("_AddObjectivePartial", viewModel);
+        //}
+
     }
-
-
 }
