@@ -61,6 +61,7 @@ namespace SPMIS_Web.Controllers
             {
                 MapId = map.MapId,
                 MapTitle = map.MapTitle,
+                MapDescription = map.MapDescription,
                 MapStart = map.MapStart,
                 MapEnd = map.MapEnd,
                 Objective = map.Objective?.ToList() ?? new List<Objective>()
@@ -87,7 +88,7 @@ namespace SPMIS_Web.Controllers
             _context.StrategyMaps.Add(model);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("StrategicMap");
         }
 
         [HttpGet]
@@ -151,6 +152,67 @@ namespace SPMIS_Web.Controllers
             return Json(new { success = true });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMap(StrategyMap strategyMap)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingMap = await _context.StrategyMaps.FindAsync(strategyMap.MapId);
+
+                    if (existingMap == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Check if this would be an active map after editing
+                    bool wouldBeActive = strategyMap.MapStart <= DateTime.Now && strategyMap.MapEnd > DateTime.Now;
+
+                    if (wouldBeActive)
+                    {
+                        // Check if there's already a different active map
+                        bool existingActiveMap = await _context.StrategyMaps.AnyAsync(m =>
+                            m.MapId != strategyMap.MapId &&
+                            m.MapStart <= DateTime.Now &&
+                            m.MapEnd > DateTime.Now);
+
+                        if (existingActiveMap)
+                        {
+                            ModelState.AddModelError("", "Only one active strategy map is allowed. Please adjust the dates.");
+                            return View("ViewMap", existingMap);
+                        }
+                    }
+
+                    // Update only the properties that can be edited
+                    existingMap.MapTitle = strategyMap.MapTitle;
+                    existingMap.MapDescription = strategyMap.MapDescription;
+                    existingMap.MapStart = strategyMap.MapStart;
+                    existingMap.MapEnd = strategyMap.MapEnd;
+
+                    _context.Update(existingMap);
+                    await _context.SaveChangesAsync();
+
+                    // Redirect to the strategy map view
+                    return RedirectToAction("ViewMap", "Map", new { id = strategyMap.MapId });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.StrategyMaps.Any(e => e.MapId == strategyMap.MapId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            // If we got this far, something failed, redisplay the strategy map
+            return RedirectToAction("ViewMap", new { id = strategyMap.MapId });
+        }
 
 
 

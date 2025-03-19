@@ -10,6 +10,7 @@ namespace SPMIS_Web.Models.ViewModels
         //public List<ObjectiveType> ObjectiveType { get; set; }
         public List<ObjectiveType> ObjectiveType { get; set; } = new List<ObjectiveType>();
         public Guid MapId { get; set; }
+        public string MapDescription { get; set; }
         public string MapTitle { get; set; } // ✅ Added
         public DateTime MapStart { get; set; } // ✅ Added
         public DateTime MapEnd { get; set; } // ✅ Added

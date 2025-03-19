@@ -1,111 +1,307 @@
 ﻿@model SPMIS_Web.Models.ViewModels.AddObjectiveTypeViewModel
 
 @{
-    ViewData["Title"] = "View Strategy Map";
+    ViewData["Title"] = "View Strategy Map | DICT";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<!-- Add this in your HTML file inside <head> or before </body> -->
+<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" loading="lazy">
+@* <script src="~/js/ViewMap.js" defer></script> *@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-<div class="px-6 py-3 rounded-md shadow-md border relative bg-blue-50">
-    <header class="w-full mb-8 text-center bg-blue-900 text-white p-8 rounded-xl shadow-md relative overflow-hidden">
-        <div class="relative z-10">
-            <h1 class="text-4xl font-bold mb-2">@Model.MapTitle</h1>
-            <p class="text-xl">Strategic Period: @Model.MapStart.Year - @Model.MapEnd.Year</p>
+<style>
+    .dict-primary {
+        background-color: #0D6EFD;
+    }
+
+    .dict-primary-text {
+        color: #0D6EFD;
+    }
+
+    .dict-secondary {
+        background-color: #1F3B69;
+    }
+
+    .dict-secondary-text {
+        color: #1F3B69;
+    }
+
+    .dict-gradient {
+        background-image: linear-gradient(to right, #0D6EFD, #2A4E8C);
+    }
+
+    .dict-card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+
+<div class="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-30">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center justify-between py-4">
+            <!-- Left Side - Back Button -->
+            <div class="flex items-center">
+                <a asp-controller="Map" asp-action="StrategicMap" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Maps
+                </a>
+            </div>
+
+            <!-- Right Side - Actions -->
+            <div class="flex items-center space-x-3">
+                <!-- Edit Map Button -->
+                <button id="openUpdateMapModalBtn" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+                    <i class="fas fa-edit mr-2"></i> Edit Map
+                </button>
+
+                <!-- Add Objective Button -->
+                <button id="AddObjectiveModalBtn" class="bg-blue-900 hover:bg-yellow-500 text-white flex items-center px-4 py-2 rounded-md font-medium shadow-sm transition duration-200">
+                    <i class="fas fa-plus mr-2"></i>Add Objective
+                </button>
+            </div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-800 to-blue-900 opacity-50"></div>
-    </header>
+    </div>
+</div>
 
-    <div class="flex justify-between items-center space-x-3 mb-8 max-w-6xl mx-auto w-full">
-        <a asp-controller="Map" asp-action="StrategicMap" class="bg-red-600 hover:bg-yellow-500 text-white flex items-center px-4 py-2 rounded-md font-medium shadow-sm transition duration-200">
-            <i class="fas fa-arrow-left mr-2"></i>Back to Maps
-        </a>
-
-        <button id="openUpdateMapModalBtn" class="bg-green-500 hover:bg-yellow-500 text-white flex items-center px-4 py-2 rounded-md font-medium shadow-sm transition duration-200">
-            Update Map
-        </button>
-
-        <!-- Add Objective Button -->
-        <button id="openModalBtn" class="bg-blue-900 hover:bg-yellow-500 text-white flex items-center px-4 py-2 rounded-md font-medium shadow-sm transition duration-200">
-            <i class="fas fa-plus mr-2"></i>Add Objective
-        </button>
-
-        
+<div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-10 shadow-lg relative overflow-hidden">
+    <div class="container mx-auto max-w-6xl px-6 flex flex-col items-center text-center md:text-left md:flex-row md:justify-between gap-6">
+        <!-- Title and Description Section -->
+        <div class="relative z-10 max-w-2xl">
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3 leading-tight">@Model.MapTitle</h1>
+            <p class="text-base md:text-lg font-medium opacity-90">Strategic Period: @Model.MapStart.Year - @Model.MapEnd.Year</p>
+            
+            @if (!string.IsNullOrEmpty(Model.MapDescription))
+            {
+                <p class="text-sm md:text-base mt-3 text-blue-100 leading-relaxed">@Model.MapDescription</p>
+            }
+        </div>
     </div>
 
-    <section class="max-w-6xl mx-auto w-full mb-8">
-        <h2 class="text-2xl font-medium text-gray-900 mb-6">Strategy Objectives</h2>
+    <!-- Background Overlay -->
+    <div class="absolute inset-0 bg-blue-900 opacity-30"></div>
+</div>
 
+<!-- Quick Stats Bar -->
+<div class="bg-white dark:bg-gray-900 shadow-md border-b border-gray-200 dark:border-gray-800">
+    <div class="container mx-auto max-w-6xl mb-4">
+        <div class="flex flex-wrap justify-center items-center text-center gap-20">
+
+
+            <!-- Total Objectives -->
+            <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
+                <i class="fas fa-tasks text-blue-600 dark:text-blue-400 text-2xl"></i>
+                <div>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">
+                        @(Model.Objective?.Count() ?? 0)
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Objectives</p>
+                </div>
+            </div>
+
+            @if (Model.Objective != null && Model.Objective.Any())
+            {
+                <!-- Core Objectives -->
+                <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
+                    <i class="fas fa-bullseye text-blue-600 dark:text-blue-400 text-2xl"></i>
+                    <div>
+                        <p class="text-xl font-bold text-gray-800 dark:text-white">
+                            @(Model.Objective.Where(o => o.Type?.ObjectiveTypeName?.Equals("Core", StringComparison.OrdinalIgnoreCase) ?? false).Count())
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Core</p>
+                    </div>
+                </div>
+
+                <!-- Support Objectives -->
+                <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
+                    <i class="fas fa-cogs text-purple-600 dark:text-purple-400 text-2xl"></i>
+                    <div>
+                        <p class="text-xl font-bold text-gray-800 dark:text-white">
+                            @(Model.Objective.Where(o => o.Type?.ObjectiveTypeName?.Equals("Supports", StringComparison.OrdinalIgnoreCase) ?? false).Count())
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Support</p>
+                    </div>
+                </div>
+
+                <!-- Additional objective types can be added dynamically via JavaScript -->
+                <div id="additional-category-stats" class="flex flex-wrap"></div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Section Header -->
+        <div class="flex items-center justify-between mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Strategy Objectives</h2>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="relative w-full md:w-64">
+                    <input type="text" id="searchObjective" placeholder="Search objectives..."
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <select id="filterObjectiveType"
+                            class="appearance-none pl-4 pr-10 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-full text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Types</option>
+                        @{
+                            var uniqueTypes = Model.Objective?.Select(o => o.Type?.ObjectiveTypeName).Distinct().Where(t => t != null).ToList();
+                            if (uniqueTypes != null)
+                            {
+                                foreach (var type in uniqueTypes)
+                                {
+                                    <option value="@type">@type</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Objectives Grid -->
         @if (Model.Objective != null && Model.Objective.Any())
         {
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="objectivesGrid">
                 @foreach (var objective in Model.Objective)
                 {
-                    <article class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition duration-200 p-5">
-                        <h3 class="text-xl font-semibold text-gray-900">@objective.ObjectiveDescription</h3>
+                    <div class="objective-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition transform hover:shadow-lg hover:translate-y-px h-full flex flex-col"
+                         data-type="@(objective.Type != null ? objective.Type.ObjectiveTypeName : "N/A")"
+                         data-description="@objective.ObjectiveDescription">
 
-                        <!-- Display the Objective Type -->
-                        <p class="text-gray-600">@(objective.Type != null ? objective.Type.ObjectiveTypeName : "N/A") Strategy</p>
-
-                        <div class="space-y-3 mb-4">
+                        <!-- Status Bar - Color based on type -->
+                        <div class="w-full h-1.5
+                     @(objective.Type?.ObjectiveTypeName == "Core" ? "bg-blue-500 dark:bg-blue-600" :
+                       (objective.Type?.ObjectiveTypeName == "Support" ? "bg-purple-500 dark:bg-purple-600" :
+                       "bg-green-500 dark:bg-green-600"))">
                         </div>
 
-                        <footer class="pt-3 border-t border-gray-200 flex justify-between">
+                        <!-- Objective Content -->
+                        <div class="p-6 flex-grow flex flex-col">
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">@objective.ObjectiveDescription</h3>
+
+                                <!-- Additional info -->
+                                <div class="flex items-center text-sm mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                                    <i class="fas fa-tag mr-2 text-gray-500 dark:text-gray-400"></i>
+                                    <span class="text-gray-600 dark:text-gray-300">@(objective.Type != null ? objective.Type.ObjectiveTypeName : "N/A") Strategy</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Footer -->
+                        <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex justify-between mt-auto">
                             <button class="openUpdateObjectiveBtn text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2"
                                     data-objectiveid="@objective.ObjectiveId">
                                 <i class="fas fa-edit"></i>Edit
                             </button>
-
-                            <button class="text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2">
-                                <i class="fas fa-user-plus"></i>Assign
+                            <button class="assign-btn text-yellow-600 hover:text-yellow-800" aria-label="Assign Objective" title="Assign Objective">
+                                <i class="fas fa-user-plus"></i> Assign
                             </button>
-                            <button class="text-gray-500 hover:text-yellow-500 transition duration-200 flex items-center gap-2">
-                                <i class="fas fa-eye"></i>View
+                            <button class="view-btn text-green-600 hover:text-green-800" aria-label="View Objective" title="View Objective">
+                                <i class="fas fa-eye"></i> View
                             </button>
-                        </footer>
-                    </article>
+                        </div>
+                    </div>
                 }
+            </div>
 
+            <!-- No Results Message (Hidden by default) -->
+            <div id="noResults" class="hidden flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 text-center mt-8">
+                <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-6">
+                    <i class="fas fa-search text-gray-500 dark:text-gray-400 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Matching Results</h3>
+                <p class="text-gray-600 dark:text-gray-400 max-w-md mb-6">
+                    We couldn't find any objectives that match your search criteria. Try adjusting your filters or search terms.
+                </p>
+                <button id="resetSearch" class="inline-flex items-center px-5 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fas fa-redo mr-2"></i> Reset Filters
+                </button>
             </div>
         }
         else
         {
-            <p class="text-center text-gray-500 text-lg">No objectives available.</p>
+            <div class="flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 text-center">
+                <div class="w-24 h-24 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-6">
+                    <i class="fas fa-tasks text-blue-600 dark:text-blue-400 text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Objectives Available</h3>
+                <p class="text-gray-600 dark:text-gray-400 max-w-md mb-6">
+                    Get started by adding strategic objectives to outline your department's goals and initiatives.
+                </p>
+                <a asp-controller="Objective" asp-action="AddObjective" asp-route-MapId="@Model.MapId"
+                   class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i> Add Your First Objective
+                </a>
+            </div>
         }
-    </section>
+    </div>
 </div>
 
-<!-- Update Map Modal-->
-<div id="updateMapModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden justify-center items-center">
-    <div class="bg-white p-6 rounded-lg shadow-md border w-96 relative">
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-red-500" onclick="closeModal()">&times;</button>
+<!-- Footer -->
+<footer class="bg-blue-700 text-white py-10">
+    <!-- Copyright Section -->
+    <div class="mt-8 pt-6 border-t border-blue-600 text-center text-blue-100 text-xs">
+        <p>&copy; @DateTime.Now.Year Republic of the Philippines. Department of Information and Communications Technology. All Rights Reserved.</p>
+        <div class="mt-2 flex justify-center space-x-4">
+            <a href="#" class="hover:text-white">Privacy Policy</a>
+            <a href="#" class="hover:text-white">Terms of Service</a>
+            <a href="#" class="hover:text-white">Accessibility</a>
+        </div>
+    </div>
+</footer>
 
-        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Update @Model.MapTitle</h1>
+
+<!-- Update Map Modal-->
+<div id="updateMapModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Edit Strategy Map</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
 
         <div id="updateMapContainer"></div>
     </div>
 </div>
 
 <!-- Add Objective Modal -->
-<div id="addObjectiveModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden justify-center items-center">
-    <div class="bg-white p-6 rounded-lg shadow-md border w-96 relative">
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-red-500" onclick="closeModal()">&times;</button>
-
-        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Add Objective</h1>
-
+<div id="addObjectiveModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Add Objective</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
         <div id="addObjectiveContainer"></div>
     </div>
 </div>
 
 <!-- Update Objective Modal-->
-<div id="updateObjectiveModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden justify-center items-center">
-    <div class="bg-white p-6 rounded-lg shadow-md border w-96 relative">
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-red-500" onclick="closeModal()">&times;</button>
-
-        <h1 class="text-center text-2xl font-semibold mb-4 bg-gray-100 py-2 rounded-lg">Update Objective</h1>
+<div id="updateObjectiveModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Update Objective</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
 
         <div id="updateObjectiveContainer"></div>
     </div>
@@ -119,7 +315,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById("addObjectiveModal");
-        const openBtn = document.getElementById("openModalBtn");
+        const openBtn = document.getElementById("AddObjectiveModalBtn");
 
         openBtn.addEventListener("click", function () {
             console.log("Opening Modal");
