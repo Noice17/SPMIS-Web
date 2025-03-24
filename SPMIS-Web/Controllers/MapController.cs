@@ -32,6 +32,22 @@ namespace SPMIS_Web.Controllers
         //    return View(maps);
         //}
 
+        public ActionResult Index()
+        {
+            var activeMap = _context.StrategyMaps.FirstOrDefault(m => m.IsActive); // Find active map
+
+            if (activeMap != null)
+            {
+                return RedirectToAction("ViewMap", "Map", new { id = activeMap.MapId });
+            }
+
+            return RedirectToAction("Index", "Home"); // Redirect to Home if no active map exists
+        }
+
+
+
+
+
         [HttpGet]
         public IActionResult StrategicMap()
         {

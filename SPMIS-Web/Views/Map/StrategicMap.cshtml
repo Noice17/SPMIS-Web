@@ -44,7 +44,7 @@
             <div class="flex items-center space-x-2 px-6 py-4 border-r border-gray-200 dark:border-gray-800">
                 <i class="fas fa-play-circle text-green-600 dark:text-green-400 text-2xl"></i>
                 <div>
-                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.MapEnd >= DateTime.Now && m.MapStart <= DateTime.Now) ?? 0)</p>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.IsActive == true) ?? 0)</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active</p>
                 </div>
             </div>
@@ -58,8 +58,8 @@
             <div class="flex items-center space-x-2 px-6 py-4">
                 <i class="fas fa-check-circle text-gray-600 dark:text-gray-400 text-2xl"></i>
                 <div>
-                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.MapEnd < DateTime.Now) ?? 0)</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Completed</p>
+                    <p class="text-xl font-bold text-gray-800 dark:text-white">@(Model?.Count(m => m.IsActive == false) ?? 0)</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Deactivated</p>
                 </div>
             </div>
         </div>
@@ -124,22 +124,23 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @if (Model != null && Model.Any())
             {
-                @foreach (var map in Model)
+                @foreach (var map in Model.OrderByDescending(m => m.IsActive)
+               .ThenBy(m => m.IsActive == false && m.MapStart > DateTime.Now ? 0 : 1)
+               .ThenBy(m => m.MapStart))
                 {
                     <div class="map-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition transform hover:shadow-lg hover:translate-y-px"
                          data-status="@(map.IsActive == true ? "active" : (map.MapStart > DateTime.Now ? "upcoming" : "deactivated"))">
 
                         <!-- Status Bar -->
                         <div class="w-full h-1.5
-                             @(map.IsActive ? "bg-green-500 dark:bg-green-600" :
-                               (map.MapStart > DateTime.Now ? "bg-yellow-500 dark:bg-yellow-600" :
-                               "bg-gray-400 dark:bg-gray-600"))">
+                 @(map.IsActive ? "bg-green-500 dark:bg-green-600" :
+                   (map.MapStart > DateTime.Now ? "bg-yellow-500 dark:bg-yellow-600" :
+                   "bg-gray-400 dark:bg-gray-600"))">
                         </div>
 
                         <!-- Map Content -->
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">@map.MapTitle</h3>
-
                             <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">@map.MapDescription</p>
 
                             <!-- Timeline & Status Info -->
@@ -150,10 +151,10 @@
                                 </div>
 
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    @(map.IsActive ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200" :
-                                    (map.MapStart > DateTime.Now ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200" :
-                                     "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                                    ))">
+                        @(map.IsActive ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200" :
+                        (map.MapStart > DateTime.Now ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200" :
+                         "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                        ))">
                                     @(map.IsActive ? "Active" : (map.MapStart > DateTime.Now ? "Upcoming" : "Deactivated"))
                                 </span>
                             </div>
@@ -169,6 +170,7 @@
                     </div>
                 }
             }
+
             else
             {
                 <div class="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 text-center">

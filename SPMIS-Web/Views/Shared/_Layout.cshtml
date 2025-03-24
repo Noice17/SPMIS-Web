@@ -31,16 +31,18 @@
                                 <span class="sidebar-label ml-3">Dashboard</span>
                             </a>
                         </li>
+
                         <li class="group">
-                            <a href="@Url.Action("StrategicMap", "Map")"
+                            <a href="@Url.Action("Index", "Map")"
                                class="flex items-center px-6 py-3 rounded-md transition-all duration-300
                                 @(ViewData["ActivePage"] == "StrategyMap" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
                                 <span class="material-symbols-outlined @(ViewData["ActivePage"] == "StrategyMap" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
                                     map
                                 </span>
-                                <span class="sidebar-label ml-3">Strategy Map</span>
+                                <span class="sidebar-label ml-3">Active Strategy Map</span>
                             </a>
                         </li>
+
                         <li class="group">
                             <a href="@Url.Action("PCR", "PCR")"
                                class="flex items-center px-6 py-3 rounded-md transition-all duration-300
