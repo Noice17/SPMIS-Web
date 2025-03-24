@@ -76,6 +76,20 @@ namespace SPMIS_Web.Controllers
             return PartialView("CreateMap"); // Load as Partial View
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> CreateMap(StrategyMap model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+
+        //    model.MapId = Guid.NewGuid();
+        //    _context.StrategyMaps.Add(model);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction("StrategicMap");
+        //}
         [HttpPost]
         public async Task<IActionResult> CreateMap(StrategyMap model)
         {
@@ -88,6 +102,7 @@ namespace SPMIS_Web.Controllers
             _context.StrategyMaps.Add(model);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Strategy Map created successfully!";
             return RedirectToAction("StrategicMap");
         }
 

@@ -197,48 +197,51 @@
             }
 
             // Check if this would be an active map
-            const wouldBeActive = startDate <= now && endDate > now;
+            //const wouldBeActive = startDate <= now && endDate > now;
+            //const wouldBeActive = startDate < now && endDate > now;
 
-            if (wouldBeActive) {
-                // Get the map ID if we're editing
-                const mapIdField = document.getElementById('MapId');
-                const mapId = mapIdField ? mapIdField.value : null;
+            //if (wouldBeActive) {
+            //    // Get the map ID if we're editing
+            //    const mapIdField = document.getElementById('MapId');
+            //    const mapId = mapIdField ? mapIdField.value : null;
 
-                // Make an AJAX call to check if an active map exists
-                try {
-                    const url = mapId
-                        ? `/Map/CheckActiveMapExists?excludeId=${mapId}`
-                        : '/Map/CheckActiveMapExists';
+            //    // Make an AJAX call to check if an active map exists
+            //    try {
+            //        const url = mapId
+            //            ? `/Map/CheckActiveMapExists?excludeId=${mapId}`
+            //            : '/Map/CheckActiveMapExists';
 
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
+            //        const response = await fetch(url);
+            //        if (!response.ok) {
+            //            throw new Error(`HTTP error! Status: ${response.status}`);
+            //        }
 
-                    const result = await response.json();
+            //        const result = await response.json();
 
-                    if (result.exists) {
-                        // Show validation error
-                        errorDiv.textContent = "Only one active strategy map is allowed. Please adjust the dates.";
-                        errorDiv.classList.remove('hidden');
-                        return;
-                    }
-                } catch (error) {
-                    console.error('Error checking for active maps:', error);
-                    errorDiv.textContent = "Error validating dates. Please try again.";
-                    errorDiv.classList.remove('hidden');
-                    return;
-                }
-            }
+            //        if (result.exists) {
+            //            // Show validation error
+            //            errorDiv.textContent = "Only one active strategy map is allowed. Please adjust the dates.";
+            //            errorDiv.classList.remove('hidden');
+            //            return;
+            //        }
+            //    } catch (error) {
+            //        console.error('Error checking for active maps:', error);
+            //        errorDiv.textContent = "Error validating dates. Please try again.";
+            //        errorDiv.classList.remove('hidden');
+            //        return;
+            //    }
+            //}
 
             // If everything is valid, submit the form
-            try {
-                this.submit();
-            } catch (error) {
-                console.error('Form submission error:', error);
-                errorDiv.textContent = "Error submitting form. Please try again.";
-                errorDiv.classList.remove('hidden');
-            }
+            //try {
+            //    this.submit();
+            //} catch (error) {
+            //    console.error('Form submission error:', error);
+            //    errorDiv.textContent = "Error submitting form. Please try again.";
+            //    errorDiv.classList.remove('hidden');
+            //}
+
+            this.submit();
         });
     }
 

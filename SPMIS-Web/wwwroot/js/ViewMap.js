@@ -101,38 +101,38 @@
     }
 
     // Edit Objective Modal functionality
-    function openEditObjectiveModal(objectiveId, objectiveDescription, objectiveType) {
-        const editModal = document.getElementById('editObjectiveModal');
-        const objectiveDescInput = document.getElementById('editObjectiveDescription');
-        const objectiveTypeSelect = document.getElementById('editObjectiveType');
-        const objectiveIdInput = document.getElementById('editObjectiveId');
+    //function openEditObjectiveModal(objectiveId, objectiveDescription, objectiveType) {
+    //    const editModal = document.getElementById('editObjectiveModal');
+    //    const objectiveDescInput = document.getElementById('editObjectiveDescription');
+    //    const objectiveTypeSelect = document.getElementById('editObjectiveType');
+    //    const objectiveIdInput = document.getElementById('editObjectiveId');
 
-        // Set form values
-        if (objectiveDescInput) objectiveDescInput.value = objectiveDescription;
-        if (objectiveTypeSelect) {
-            // Find and select the correct option
-            Array.from(objectiveTypeSelect.options).forEach(option => {
-                if (option.value === objectiveType) {
-                    option.selected = true;
-                }
-            });
-        }
-        if (objectiveIdInput) objectiveIdInput.value = objectiveId;
+    //    // Set form values
+    //    if (objectiveDescInput) objectiveDescInput.value = objectiveDescription;
+    //    if (objectiveTypeSelect) {
+    //        // Find and select the correct option
+    //        Array.from(objectiveTypeSelect.options).forEach(option => {
+    //            if (option.value === objectiveType) {
+    //                option.selected = true;
+    //            }
+    //        });
+    //    }
+    //    if (objectiveIdInput) objectiveIdInput.value = objectiveId;
 
-        // Show modal
-        if (editModal) editModal.classList.remove('hidden');
-    }
+    //    // Show modal
+    //    if (editModal) editModal.classList.remove('hidden');
+    //}
 
-    // Close Edit Objective Modal
-    const closeEditObjectiveBtn = document.getElementById('closeEditObjective');
-    const cancelEditObjectiveBtn = document.getElementById('cancelEditObjective');
+    //// Close Edit Objective Modal
+    //const closeEditObjectiveBtn = document.getElementById('closeEditObjective');
+    //const cancelEditObjectiveBtn = document.getElementById('cancelEditObjective');
 
-    function closeEditObjectiveModal() {
-        document.getElementById('editObjectiveModal').classList.add('hidden');
-    }
+    //function closeEditObjectiveModal() {
+    //    document.getElementById('editObjectiveModal').classList.add('hidden');
+    //}
 
-    if (closeEditObjectiveBtn) closeEditObjectiveBtn.addEventListener('click', closeEditObjectiveModal);
-    if (cancelEditObjectiveBtn) cancelEditObjectiveBtn.addEventListener('click', closeEditObjectiveModal);
+    //if (closeEditObjectiveBtn) closeEditObjectiveBtn.addEventListener('click', closeEditObjectiveModal);
+    //if (cancelEditObjectiveBtn) cancelEditObjectiveBtn.addEventListener('click', closeEditObjectiveModal);
 
     // Close modals when clicking outside
     document.getElementById('viewObjectiveModal')?.addEventListener('click', function (event) {
@@ -141,23 +141,23 @@
         }
     });
 
-    document.getElementById('editObjectiveModal')?.addEventListener('click', function (event) {
-        if (event.target === this) {
-            this.classList.add('hidden');
-        }
-    });
+    //document.getElementById('editObjectiveModal')?.addEventListener('click', function (event) {
+    //    if (event.target === this) {
+    //        this.classList.add('hidden');
+    //    }
+    //});
 
     // Form validation for edit objective form
-    const editObjectiveForm = document.getElementById('editObjectiveForm');
-    if (editObjectiveForm) {
-        editObjectiveForm.addEventListener('submit', function (event) {
-            const description = document.getElementById('editObjectiveDescription').value;
-            if (!description.trim()) {
-                event.preventDefault();
-                alert('Objective description cannot be empty');
-            }
-        });
-    }
+    //const editObjectiveForm = document.getElementById('editObjectiveForm');
+    //if (editObjectiveForm) {
+    //    editObjectiveForm.addEventListener('submit', function (event) {
+    //        const description = document.getElementById('editObjectiveDescription').value;
+    //        if (!description.trim()) {
+    //            event.preventDefault();
+    //            alert('Objective description cannot be empty');
+    //        }
+    //    });
+    //}
 
     // Dynamic Category Counting & Display
     function updateCategoryStats() {
