@@ -8,6 +8,7 @@ using SPMIS_Web.Data;
 using SPMIS_Web.Models.Entities;
 using SPMIS_Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections;
 
 namespace SPMIS_Web.Controllers
 {
@@ -88,6 +89,7 @@ namespace SPMIS_Web.Controllers
         //    _context.StrategyMaps.Add(model);
         //    await _context.SaveChangesAsync();
 
+        //    TempData["SuccessMessage"] = "Strategy Map created successfully!";
         //    return RedirectToAction("StrategicMap");
         //}
         [HttpPost]
@@ -98,13 +100,37 @@ namespace SPMIS_Web.Controllers
                 return View(model);
             }
 
+            // Get the current date
+            DateTime currentDate = DateTime.Today;
+
+            // Ensure start and end dates are used correctly
+            DateTime mapStartDate = model.MapStart;
+            DateTime mapEndDate = model.MapEnd;
+
+            // Check if there is an active map that overlaps with the selected date range
+            bool hasActiveMapInRange = await _context.StrategyMaps
+                .AnyAsync(m => m.IsActive == true &&
+                               ((m.MapStart <= mapEndDate && m.MapEnd >= mapStartDate)));
+
+            // Determine IsActive status:
+            // - If the new map's date range has already ended, it must be inactive.
+            // - Otherwise, it's active only if no other active maps exist in the range.
+            model.IsActive = (currentDate <= mapEndDate) && !hasActiveMapInRange;
+
+            // Assign a new ID
             model.MapId = Guid.NewGuid();
+
+            // Save to database
             _context.StrategyMaps.Add(model);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Strategy Map created successfully!";
             return RedirectToAction("StrategicMap");
         }
+
+
+
+
 
         [HttpGet]
         public IActionResult MapList(int page = 1)
@@ -131,7 +157,8 @@ namespace SPMIS_Web.Controllers
                     MapTitle = m.MapTitle,
                     MapDescription = m.MapDescription,
                     MapStart = m.MapStart,
-                    MapEnd = m.MapEnd
+                    MapEnd = m.MapEnd,
+                    IsActive = m.IsActive
                 }).FirstOrDefaultAsync();
 
             if (map == null)
@@ -156,10 +183,22 @@ namespace SPMIS_Web.Controllers
                 return NotFound();
             }
 
+            // Check if the user is trying to activate this map
+            if (model.IsActive)
+            {
+                bool isAnotherMapActive = await _context.StrategyMaps.AnyAsync(m => m.IsActive && m.MapId != model.MapId);
+
+                if (isAnotherMapActive)
+                {
+                    return BadRequest(new { error = "Another active map already exists. Please deactivate it first." });
+                }
+            }
+
             map.MapTitle = model.MapTitle;
             map.MapDescription = model.MapDescription;
             map.MapStart = model.MapStart;
             map.MapEnd = model.MapEnd;
+            map.IsActive = model.IsActive;
 
             _context.StrategyMaps.Update(map);
             await _context.SaveChangesAsync();
