@@ -20,17 +20,6 @@ namespace SPMIS_Web.Controllers
             _context = context;
         }
 
-        //public IActionResult Index()
-        //{
-        //    ViewData["ActivePage"] = "Index"; // Highlight Strategy Map
-
-        //    var maps = _context.StrategyMaps
-        //        .OrderByDescending(m => m.MapStart)
-        //        .ToList();
-
-        //    return View(maps);
-        //}
-
         [HttpGet]
         public IActionResult StrategicMap()
         {
@@ -213,26 +202,6 @@ namespace SPMIS_Web.Controllers
             // If we got this far, something failed, redisplay the strategy map
             return RedirectToAction("ViewMap", new { id = strategyMap.MapId });
         }
-
-
-
-        // ---- DO NOT USE: Function is moved to AddObjective in the Objective Controller  ---
-        //[HttpGet]
-        //public IActionResult AddObjectivePartial(Guid MapId)
-        //{
-        //    var viewModel = new AddObjectiveTypeViewModel
-        //    {
-        //        MapId = MapId,
-        //        ObjectiveType = _context.ObjectiveTypes
-        //            .Select(o => new ObjectiveType
-        //            {
-        //                ObjectiveTypeId = o.ObjectiveTypeId,
-        //                ObjectiveTypeName = o.ObjectiveTypeName
-        //            }).ToList()
-        //    };
-
-        //    return PartialView("_AddObjectivePartial", viewModel);
-        //}
 
     }
 }
