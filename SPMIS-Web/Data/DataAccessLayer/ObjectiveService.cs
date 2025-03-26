@@ -52,9 +52,25 @@ namespace SPMIS_Web.Data.DataAccessLayer
             _dbContext.Objectives.Update(objective);
             await _dbContext.SaveChangesAsync();            
         }
-        
+
 
         //Add Objective Type
+        //public async Task AddObjectiveType(ObjectiveType objectiveType)
+        //{
+        //    if (objectiveType == null || string.IsNullOrWhiteSpace(objectiveType.ObjectiveTypeName))
+        //    {
+        //        throw new ArgumentException("Objective Type cannot be null or empty.");
+        //    }
+
+        //    var newObjectiveType = new ObjectiveType
+        //    {
+        //        ObjectiveTypeName = objectiveType.ObjectiveTypeName
+        //    };
+
+        //    _dbContext.ObjectiveTypes.Add(newObjectiveType);
+        //    await _dbContext.SaveChangesAsync();
+        //}
+        // Add Objective Type
         public async Task AddObjectiveType(ObjectiveType objectiveType)
         {
             if (objectiveType == null || string.IsNullOrWhiteSpace(objectiveType.ObjectiveTypeName))
@@ -64,12 +80,14 @@ namespace SPMIS_Web.Data.DataAccessLayer
 
             var newObjectiveType = new ObjectiveType
             {
-                ObjectiveTypeName = objectiveType.ObjectiveTypeName
+                ObjectiveTypeName = objectiveType.ObjectiveTypeName,
+                IsActive = objectiveType.IsActive // Ensure IsActive is set
             };
 
             _dbContext.ObjectiveTypes.Add(newObjectiveType);
             await _dbContext.SaveChangesAsync();
         }
+
 
         //Retrieve
         public async Task<List<ObjectiveType>> GetObjectiveTypes()
@@ -77,20 +95,25 @@ namespace SPMIS_Web.Data.DataAccessLayer
             return await _dbContext.ObjectiveTypes.ToListAsync();
         }
         //Edit the same page
-        public async Task<bool> UpdateObjectiveType(Guid id, string newName)
+        public async Task<bool> UpdateObjectiveType(Guid objectiveTypeId, string objectiveTypeName, bool isActive)
         {
-            var objectiveType = await _dbContext.ObjectiveTypes.FindAsync(id);
+            var objectiveType = await _dbContext.ObjectiveTypes.FindAsync(objectiveTypeId);
             if (objectiveType == null)
             {
                 return false;
             }
 
-            objectiveType.ObjectiveTypeName = newName;
+            objectiveType.ObjectiveTypeName = objectiveTypeName;
+            objectiveType.IsActive = isActive; // Update IsActive field
+
+            _dbContext.ObjectiveTypes.Update(objectiveType);
             await _dbContext.SaveChangesAsync();
+
             return true;
         }
 
-        
+
+
 
         public async Task<Objective?> GetObjectiveByIdAsync(Guid objectiveId)
         {

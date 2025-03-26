@@ -7,7 +7,15 @@
         <label class="block text-gray-700 font-medium">Objective Type</label>
         <input type="text" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" asp-for="ObjectiveTypeName" required />
     </div>
+
+    <div class="form-group form-check">
+        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+        <label asp-for="IsActive" class="form-check-label">Is Active?</label>
+    </div>
+
+
     <div class="mb-4">
         <input class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer" type="submit" value="Submit" />
     </div>
+
 </form>
