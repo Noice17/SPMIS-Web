@@ -47,7 +47,7 @@ namespace SPMIS_Web.Migrations
 
                     b.HasIndex("ObjectiveTypeId");
 
-                    b.ToTable("Objectives");
+                    b.ToTable("Objectives", (string)null);
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.ObjectiveType", b =>
@@ -62,7 +62,9 @@ namespace SPMIS_Web.Migrations
 
                     b.HasKey("ObjectiveTypeId");
 
-                    b.ToTable("ObjectiveTypes");
+                    b.HasIndex("StrategyMapMapId");
+
+                    b.ToTable("ObjectiveTypes", (string)null);
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.StrategyMap", b =>
@@ -90,7 +92,7 @@ namespace SPMIS_Web.Migrations
 
                     b.HasKey("MapId");
 
-                    b.ToTable("StrategyMaps");
+                    b.ToTable("StrategyMaps", (string)null);
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.Objective", b =>
