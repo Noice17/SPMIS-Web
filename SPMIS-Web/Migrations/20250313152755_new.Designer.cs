@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPMIS_Web.Data;
 
@@ -11,9 +12,11 @@ using SPMIS_Web.Data;
 namespace SPMIS_Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250313152755_new")]
+    partial class @new
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace SPMIS_Web.Migrations
 
                     b.HasIndex("ObjectiveTypeId");
 
-                    b.ToTable("Objectives", (string)null);
+                    b.ToTable("Objectives");
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.ObjectiveType", b =>
@@ -76,7 +79,7 @@ namespace SPMIS_Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("MapDescription")
@@ -96,7 +99,7 @@ namespace SPMIS_Web.Migrations
 
                     b.HasKey("MapId");
 
-                    b.ToTable("StrategyMaps", (string)null);
+                    b.ToTable("StrategyMaps");
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.Objective", b =>

@@ -16,9 +16,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\DataAccessLayer\" />
-    <Folder Include="Models\ViewModels\" />
-  </ItemGroup>
-
 </Project>
