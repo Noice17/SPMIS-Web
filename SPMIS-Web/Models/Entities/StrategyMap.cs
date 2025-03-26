@@ -23,7 +23,7 @@ namespace SPMIS_Web.Models.Entities
         [DataType(DataType.Date)]
         public DateTime MapEnd { get; set; }
 
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         public StrategyMap()
         {

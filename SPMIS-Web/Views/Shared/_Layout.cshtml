@@ -18,50 +18,52 @@
                     <button id="toggleSidebar" class="text-gray-600 text-2xl focus:outline-none">☰</button>
                 </div>
 
-                <!-- Sidebar Menu Items -->
-                <ul class="mt-4 space-y-1">
-                    <li class="group">
-                        <a href="@Url.Action("Index", "Home")"
-                           class="flex items-center px-6 py-3 rounded-md transition-all duration-300
-                            @(ViewData["ActivePage"] == "Dashboard" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
-                            <span class="material-symbols-outlined @(ViewData["ActivePage"] == "Dashboard" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
-                                dashboard
-                            </span>
-                            <span class="sidebar-label ml-3">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="group">
-                        <a href="@Url.Action("StrategicMap", "Map")"
-                           class="flex items-center px-6 py-3 rounded-md transition-all duration-300
-                            @(ViewData["ActivePage"] == "StrategyMap" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
-                            <span class="material-symbols-outlined @(ViewData["ActivePage"] == "StrategyMap" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
-                                map
-                            </span>
-                            <span class="sidebar-label ml-3">Strategy Map</span>
-                        </a>
-                    </li>
-                    <li class="group">
-                        <a href="@Url.Action("PCR", "PCR")"
-                           class="flex items-center px-6 py-3 rounded-md transition-all duration-300
-                            @(ViewData["ActivePage"] == "PCR" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
-                            <span class="material-symbols-outlined @(ViewData["ActivePage"] == "PCR" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
-                                analytics
-                            </span>
-                            <span class="sidebar-label ml-3">PCR</span>
-                        </a>
-                    </li>
-                    <li class="group">
-                        <a href="@Url.Action("Settings", "Settings")"
-                           class="flex items-center px-6 py-3 rounded-md transition-all duration-300
-                            @(ViewData["ActivePage"] == "Settings" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
-                            <span class="material-symbols-outlined @(ViewData["ActivePage"] == "Settings" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
-                                settings
-                            </span>
-                            <span class="sidebar-label ml-3">Settings</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    <!-- Sidebar Menu Items -->
+                    <ul class="mt-4 space-y-1">
+                        <li class="group">
+                            <a href="@Url.Action("Index", "Home")"
+                               class="flex items-center px-6 py-3 rounded-md transition-all duration-300
+                                @(ViewData["ActivePage"] == "Dashboard" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
+                                <span class="material-symbols-outlined @(ViewData["ActivePage"] == "Dashboard" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
+                                    dashboard
+                                </span>
+                                <span class="sidebar-label ml-3">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="group">
+                            <a href="@Url.Action("Index", "Map")"
+                               class="flex items-center px-6 py-3 rounded-md transition-all duration-300
+                                @(ViewData["ActivePage"] == "StrategyMap" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
+                                <span class="material-symbols-outlined @(ViewData["ActivePage"] == "StrategyMap" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
+                                    map
+                                </span>
+                                <span class="sidebar-label ml-3">Active Strategy Map</span>
+                            </a>
+                        </li>
+
+                        <li class="group">
+                            <a href="@Url.Action("PCR", "PCR")"
+                               class="flex items-center px-6 py-3 rounded-md transition-all duration-300
+                                @(ViewData["ActivePage"] == "PCR" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
+                                <span class="material-symbols-outlined @(ViewData["ActivePage"] == "PCR" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
+                                    analytics
+                                </span>
+                                <span class="sidebar-label ml-3">PCR</span>
+                            </a>
+                        </li>
+                        <li class="group">
+                            <a href="@Url.Action("Settings", "Settings")"
+                               class="flex items-center px-6 py-3 rounded-md transition-all duration-300
+                                @(ViewData["ActivePage"] == "Settings" ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-200")">
+                                <span class="material-symbols-outlined @(ViewData["ActivePage"] == "Settings" ? "text-blue-700" : "text-gray-600 group-hover:text-gray-800")">
+                                    settings
+                                </span>
+                                <span class="sidebar-label ml-3">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
             <!-- User & Logout Section -->
             <div class="border-t border-gray-300">
