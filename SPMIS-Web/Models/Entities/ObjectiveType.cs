@@ -4,6 +4,6 @@
     {
         public Guid ObjectiveTypeId { get; set; }
         public string ObjectiveTypeName { get; set; }
-        
+        public bool IsActive { get; set; }  
     }
 }

@@ -39,6 +39,22 @@ namespace SPMIS_Web.Controllers
         }
 
         // POST: Edit Objective Type
+        //[HttpPost]
+        //public async Task<IActionResult> Edit([FromBody] ObjectiveType model)
+        //{
+        //    if (model == null || model.ObjectiveTypeId == Guid.Empty || string.IsNullOrWhiteSpace(model.ObjectiveTypeName))
+        //    {
+        //        return BadRequest(new { message = "Invalid data." });
+        //    }
+
+        //    var success = await _objectiveService.UpdateObjectiveType(model.ObjectiveTypeId, model.ObjectiveTypeName);
+        //    if (!success)
+        //    {
+        //        return StatusCode(500, new { message = "Error updating Objective Type." });
+        //    }
+
+        //    return Json(new { message = "Objective Type updated successfully!" });
+        //}
         [HttpPost]
         public async Task<IActionResult> Edit([FromBody] ObjectiveType model)
         {
@@ -47,7 +63,7 @@ namespace SPMIS_Web.Controllers
                 return BadRequest(new { message = "Invalid data." });
             }
 
-            var success = await _objectiveService.UpdateObjectiveType(model.ObjectiveTypeId, model.ObjectiveTypeName);
+            var success = await _objectiveService.UpdateObjectiveType(model.ObjectiveTypeId, model.ObjectiveTypeName, model.IsActive);
             if (!success)
             {
                 return StatusCode(500, new { message = "Error updating Objective Type." });
@@ -55,6 +71,7 @@ namespace SPMIS_Web.Controllers
 
             return Json(new { message = "Objective Type updated successfully!" });
         }
+
 
         // GET: Retrieve Objective Types for JSON response
         [HttpGet]

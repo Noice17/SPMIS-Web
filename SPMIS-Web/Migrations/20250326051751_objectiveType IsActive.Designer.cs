@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPMIS_Web.Data;
 
@@ -11,9 +12,11 @@ using SPMIS_Web.Data;
 namespace SPMIS_Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326051751_objectiveType IsActive")]
+    partial class objectiveTypeIsActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace SPMIS_Web.Migrations
 
                     b.HasIndex("ObjectiveTypeId");
 
-                    b.ToTable("Objectives", (string)null);
+                    b.ToTable("Objectives");
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.ObjectiveType", b =>
@@ -63,7 +66,12 @@ namespace SPMIS_Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("StrategyMapMapId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ObjectiveTypeId");
+
+                    b.HasIndex("StrategyMapMapId");
 
                     b.ToTable("ObjectiveTypes");
                 });
@@ -94,7 +102,7 @@ namespace SPMIS_Web.Migrations
 
                     b.HasKey("MapId");
 
-                    b.ToTable("StrategyMaps", (string)null);
+                    b.ToTable("StrategyMaps");
                 });
 
             modelBuilder.Entity("SPMIS_Web.Models.Entities.Objective", b =>
@@ -116,9 +124,18 @@ namespace SPMIS_Web.Migrations
                     b.Navigation("Type");
                 });
 
+            modelBuilder.Entity("SPMIS_Web.Models.Entities.ObjectiveType", b =>
+                {
+                    b.HasOne("SPMIS_Web.Models.Entities.StrategyMap", null)
+                        .WithMany("ObjectiveType")
+                        .HasForeignKey("StrategyMapMapId");
+                });
+
             modelBuilder.Entity("SPMIS_Web.Models.Entities.StrategyMap", b =>
                 {
                     b.Navigation("Objective");
+
+                    b.Navigation("ObjectiveType");
                 });
 #pragma warning restore 612, 618
         }

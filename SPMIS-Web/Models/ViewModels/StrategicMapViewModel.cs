@@ -1,11 +1,10 @@
-﻿using System;
+﻿using SPMIS_Web.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace SPMIS_Web.Models.Entities
+namespace SPMIS_Web.Models.ViewModels
 {
-    public class StrategyMap
+    public class StrategicMapViewModel
     {
-        [Key]
         public Guid MapId { get; set; }
 
         [Required(ErrorMessage = "Description is required")]
@@ -25,13 +24,17 @@ namespace SPMIS_Web.Models.Entities
 
         public bool IsActive { get; set; }
 
-        //public StrategyMap()
-        //{
-        //    MapDescription = string.Empty; // Default value
-        //    MapTitle = string.Empty; // Default value
-        //}
-        //public List<ObjectiveType> ObjectiveType { get; set; } = new List<ObjectiveType>();
+        public List<ObjectiveType> ObjectiveType { get; set; } = new List<ObjectiveType>();
 
         public List<Objective> Objective { get; set; } = new List<Objective>();
+
+        // Constructor with default values
+        public StrategicMapViewModel()
+        {
+            MapDescription = string.Empty;
+            MapTitle = string.Empty;
+            ObjectiveType = new List<ObjectiveType>();
+            Objective = new List<Objective>();
+        }
     }
 }
