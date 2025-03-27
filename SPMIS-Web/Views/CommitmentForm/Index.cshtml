@@ -47,7 +47,7 @@
         I, &lt;NAME OF RATEE&gt;, &lt;Designation&gt; of &lt;Office&gt;, commit to deliver and agree to be rated on the attainment of the following targets in accordance with the indicated measures for the period of &lt;RATING PERIOD&gt;.
     </p>
 
-    <table>
+    <table id="functionTable">
         <tr>
             <th rowspan="2">PROGRAMS, ACTIVITIES, AND PROJECTS (PAPS) OUTPUT</th>
             <th rowspan="2">SUCCESS INDICATORS</th>
@@ -56,6 +56,7 @@
             <th rowspan="2">DIMENSIONS</th>
             <th colspan="5">RATING MATRIX</th>
             <th rowspan="2">PARAMETERS/ASSUMPTIONS/METHODOLOGY</th>
+            <th rowspan="2">Actions</th>
         </tr>
         <tr>
             <th style="font-size: 12px;">5 <br />(Outstanding)</th>
@@ -65,7 +66,15 @@
             <th style="font-size: 12px;">1 <br />(Poor)</th>
         </tr>
         <tr class="function-row">
-            <td colspan="11">STRATEGIC FUNCTION</td>
+            <td colspan="12">
+                STRATEGIC FUNCTION
+                <div style="float: right;">
+                    <button onclick="addRow(this)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Add Row
+                    </button>
+                </div>
+
+             </td>
         </tr>
         <tr>
             <td><input type="text"></td>
@@ -73,8 +82,6 @@
             <td>
                 <input type="text" class="budget-input" oninput="formatBudget(this)" onblur="finalizeBudget(this)" />
             </td>
-
-
             <td><input type="text"></td>
             <td><input type="text"></td>
             <td><input type="text"></td>
@@ -83,9 +90,25 @@
             <td><input type="text"></td>
             <td><input type="text"></td>
             <td><input type="text"></td>
+            <td>
+                <button onclick="deleteRow(this)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span>
+                </button>
+            </td>
         </tr>
         <tr class="function-row">
-            <td colspan="11">CORE FUNCTION</td>
+            <td colspan="12">
+                CORE FUNCTION
+                <div style="float: right;">
+                    <button onclick="addRow(this)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Add Row
+                    </button>
+                </div>
+
+            </td>
+
         </tr>
         <tr>
             <td><input type="text"></td>
@@ -103,9 +126,24 @@
             <td><input type="text"></td>
             <td><input type="text"></td>
             <td><input type="text"></td>
+            <td>
+                <button onclick="deleteRow(this)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span>
+                </button>
+            </td>
         </tr>
         <tr class="function-row">
-            <td colspan="11">SUPPORT FUNCTION</td>
+            <td colspan="12">
+                SUPPORT FUNCTION
+                <div style="float: right;">
+                    <button onclick="addRow(this)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Add Row
+                    </button>
+                </div>
+
+            </td>
         </tr>
         <tr>
             <td><input type="text"></td>
@@ -113,8 +151,6 @@
             <td>
                 <input type="text" class="budget-input" oninput="formatBudget(this)" onblur="finalizeBudget(this)" />
             </td>
-
-
             <td><input type="text"></td>
             <td><input type="text"></td>
             <td><input type="text"></td>
@@ -123,9 +159,17 @@
             <td><input type="text"></td>
             <td><input type="text"></td>
             <td><input type="text"></td>
+            <td>
+                <button onclick="deleteRow(this)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span>
+                </button>
+            </td>
         </tr>
+    </table>
 
-
+        <!--Rating Scale-->
     <table>
         <tr>
             <th>Rating Scale</th>
@@ -187,7 +231,48 @@
             input.value = '';
         }
     }
+</script>
 
+<script>
+         function addRow(button) {
+        let functionRow = button.closest(".function-row"); // Locate function section
+        let newRow = document.createElement("tr"); // Create new row
+
+        newRow.innerHTML = `
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text" class="budget-input" oninput="formatBudget(this)" onblur="finalizeBudget(this)"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td>
+                <button onclick="deleteRow(this)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
+                        <span class="material-symbols-outlined">
+                            delete
+                        </span>
+                </button>
+            </td>
+        `;
+
+        // Find last row within the same function section
+        let lastRow = functionRow;
+        while (lastRow.nextElementSibling && !lastRow.nextElementSibling.classList.contains("function-row")) {
+            lastRow = lastRow.nextElementSibling;
+        }
+
+        // Insert the new row after the last row in the current function section
+        lastRow.parentNode.insertBefore(newRow, lastRow.nextElementSibling);
+    }
+
+    function deleteRow(button) {
+        let row = button.closest("tr"); // Locate the specific row
+        row.parentNode.removeChild(row); // Remove it
+    }
 
 
 </script>
