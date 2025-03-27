@@ -1,0 +1,193 @@
+﻿<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office/Division Performance Commitment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .function-row {
+            background-color: #b0c4de;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            border: none;
+            padding: 5px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; font-size: 28px; font-weight: bold">OFFICE/DIVISION PERFORMANCE COMMITMENT FORM</h1>
+
+    <p style="text-align: center; font-size: 20px; margin-bottom: 20px; font-weight: bold">
+        I, &lt;NAME OF RATEE&gt;, &lt;Designation&gt; of &lt;Office&gt;, commit to deliver and agree to be rated on the attainment of the following targets in accordance with the indicated measures for the period of &lt;RATING PERIOD&gt;.
+    </p>
+
+    <table>
+        <tr>
+            <th rowspan="2">PROGRAMS, ACTIVITIES, AND PROJECTS (PAPS) OUTPUT</th>
+            <th rowspan="2">SUCCESS INDICATORS</th>
+            <th rowspan="2">ALLOTTED BUDGET</th>
+            <th rowspan="2">DIVISION/INDIVIDUALS RESPONSIBLE</th>
+            <th rowspan="2">DIMENSIONS</th>
+            <th colspan="5">RATING MATRIX</th>
+            <th rowspan="2">PARAMETERS/ASSUMPTIONS/METHODOLOGY</th>
+        </tr>
+        <tr>
+            <th style="font-size: 12px;">5 <br />(Outstanding)</th>
+            <th style ="font-size: 12px;">4 <br />(Very Satisfactory)</th>
+            <th style="font-size: 12px;">3 <br />(Satisfactory)</th>
+            <th style="font-size: 12px;">2 <br />(Unsatisfactory)</th>
+            <th style="font-size: 12px;">1 <br />(Poor)</th>
+        </tr>
+        <tr class="function-row">
+            <td colspan="11">STRATEGIC FUNCTION</td>
+        </tr>
+        <tr>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td>
+                <input type="text" class="budget-input" oninput="formatBudget(this)" onblur="finalizeBudget(this)" />
+            </td>
+
+
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+        </tr>
+        <tr class="function-row">
+            <td colspan="11">CORE FUNCTION</td>
+        </tr>
+        <tr>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td>
+                <input type="text" class="budget-input" oninput="formatBudget(this)" onblur="finalizeBudget(this)" />
+            </td>
+
+
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+        </tr>
+        <tr class="function-row">
+            <td colspan="11">SUPPORT FUNCTION</td>
+        </tr>
+        <tr>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td>
+                <input type="text" class="budget-input" oninput="formatBudget(this)" onblur="finalizeBudget(this)" />
+            </td>
+
+
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+            <td><input type="text"></td>
+        </tr>
+
+
+    <table>
+        <tr>
+            <th>Rating Scale</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>Outstanding</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>Very Satisfactory</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Satisfactory</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Unsatisfactory</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>Poor</td>
+            <td>1</td>
+        </tr>
+    </table>
+</body>
+<script>
+    function formatBudget(input) {
+        // Allow only numbers, commas, and one decimal point
+        let value = input.value.replace(/[^0-9.,]/g, '');
+
+        // Prevent multiple decimal points
+        let decimalCount = (value.match(/\./g) || []).length;
+        if (decimalCount > 1) {
+            value = value.substring(0, value.lastIndexOf('.')); // Remove extra decimals
+        }
+
+        // Remove commas for processing
+        value = value.replace(/,/g, '');
+
+        // Format the number
+        if (!isNaN(value) && value !== '') {
+            let parts = value.split('.');
+            let intPart = parseInt(parts[0]).toLocaleString('en-US');
+            let decimalPart = parts[1] !== undefined ? '.' + parts[1].slice(0, 2) : '';
+            input.value = intPart + decimalPart;
+        } else {
+            input.value = ''; // Clear input if invalid
+        }
+    }
+
+    function finalizeBudget(input) {
+        // Ensure the value is properly formatted when the user leaves the input
+        let value = parseFloat(input.value.replace(/,/g, ''));
+        if (!isNaN(value)) {
+            input.value = value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+            input.value = '';
+        }
+    }
+
+
+
+</script>
