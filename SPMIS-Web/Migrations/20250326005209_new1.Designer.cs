@@ -12,8 +12,8 @@ using SPMIS_Web.Data;
 namespace SPMIS_Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250324055930_IsActive required")]
-    partial class IsActiverequired
+    [Migration("20250326005209_new1")]
+    partial class new1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
